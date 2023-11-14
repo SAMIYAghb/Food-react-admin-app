@@ -12,16 +12,16 @@ import ForgetPass from './AuthModule/Components/ForgetPass/ForgetPass';
 
 function App() {
 
-  const routes = createBrowserRouter([
+  const routes = createBrowserRouter([     
     {
       path:"dashboard",
       element: <MasterLayout/>,
       errorElement: <NotFound/>,
       children:[
         {index: true, element:<Home/>},
-        {index: "users", element:<UsersList/>},
-        {index: "recipes", element:<RecipesList/>},
-        {index: "categories", element:<CategoriesList/>},
+        {path: "users", element:<UsersList/>},
+        {path: "recipes", element:<RecipesList/>},
+        {path: "categories", element:<CategoriesList/>},
       ]
     },
     {
@@ -30,13 +30,13 @@ function App() {
       errorElement: <NotFound/>,
       children:[
         {index: true, element:<Login/>},
-        {index: "forget-pass",element:<ForgetPass/>},
+        {path: "forget-pass",element:<ForgetPass/>},
       ]
     }
   ])
   return(
     <>
-    <RouterProvider router={routes}/>
+      <RouterProvider router={routes}/> 
     </>
   )
 }
