@@ -1,0 +1,16 @@
+http://upskilling-egypt.com:3002/
+
+superAdmin identifiant:
+
+superadmin@email.com
+@Password123!
+
+
+login/ logOut/reset password:
+1-setup UI (design)
+2-validation 
+3-API integration 
+
+**validation: we use react-hook-form (we can use yup, joi, zod,,,)
+**API integration: we use swagger to test the API 
+
