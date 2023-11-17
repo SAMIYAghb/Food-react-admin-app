@@ -11,6 +11,7 @@ import Login from './AuthModule/Components/Login/Login';
 import ForgetPass from './AuthModule/Components/ForgetPass/ForgetPass';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import ProtectedRoute from './AuthModule/Components/ProtectedRoute/ProtectedRoute';
 
 function App() {
   const [adminData, setAdminData] = useState(null);
@@ -32,7 +33,11 @@ function App() {
   const routes = createBrowserRouter([     
     {
       path:"dashboard",
-      element: <MasterLayout adminData={adminData}/>,
+      element:(
+          <ProtectedRoute adminData={adminData}>
+            <MasterLayout adminData={adminData}/>
+          </ProtectedRoute>
+      ),
       errorElement: <NotFound/>,
       children:[
         {index: true, element:<Home/>},
@@ -43,7 +48,11 @@ function App() {
     },
     {
       path:"/",
-      element: <AuthLayout/>,
+      element: (
+          // <ProtectedRoute adminData={adminData}>
+            <AuthLayout/>   
+          // </ProtectedRoute>
+      ),
       errorElement: <NotFound/>,
       children:[
         {index: true, element:<Login saveAdminData={saveAdminData}/>},

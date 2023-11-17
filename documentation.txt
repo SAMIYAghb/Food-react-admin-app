@@ -1,4 +1,4 @@
-http://upskilling-egypt.com:3002/
+http://upskilling-egypt.com:3002/docs
 
 superAdmin identifiant:
 
@@ -6,6 +6,8 @@ superadmin@email.com
 @Password123!
 
 
+
+**********Explications********
 login/ logOut/reset password:
 1-setup UI (design)
 2-validation 
@@ -17,3 +19,5 @@ login/ logOut/reset password:
 encoding and decoding Token:
 login => call api => set Token in local storage 
 => decode token =>navigate to home (code in logi and app )
+
+***Auth guard : make the ProtectedRoute
