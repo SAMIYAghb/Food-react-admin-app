@@ -5,7 +5,10 @@ superAdmin identifiant:
 superadmin@email.com
 @Password123!
 
-
+admin 
+upskilling.eg1@gmail.com
+Admin@124
+Admin@123
 
 **********Explications********
 login/ logOut/reset password:
@@ -18,6 +21,19 @@ login/ logOut/reset password:
 
 encoding and decoding Token:
 login => call api => set Token in local storage 
-=> decode token =>navigate to home (code in logi and app )
+=> decode token =>navigate to home (code in login and app )
 
 ***Auth guard : make the ProtectedRoute
+
+
+************a retenir*******************
+chaque API apres avoir fait Login,
+ le backend attend toujours un Token
+ pour mieu comprendre : 
+ on consédère que le backend est une cinéma
+  et le Token c'est le ticket
+  donc pour accéder au cinéma il te faut un tiket ^_^
+ 
+ **ay API ba3d mabti3mil Login,
+ El backend Biyistana minik Token 
+ ***************************************

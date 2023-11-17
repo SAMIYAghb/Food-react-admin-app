@@ -8,14 +8,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const Login = ({saveAdminData}) => {
-  
+ 
   const navigate = useNavigate();
   const {
     register, //contient the data of the form
     handleSubmit,
     // watch,
     formState: { errors },
-  } = useForm()
+  } = useForm();
   
   const onSubmit = async(data) => {
     console.log(data)

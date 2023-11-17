@@ -8,7 +8,7 @@ import RecipesList from './RecipesModule/Components/RecipesList/RecipesList';
 import CategoriesList from './CategoriesModule/Components/CategoriesList/CategoriesList';
 import AuthLayout from './SharedModule/Components/AuthLayout/AuthLayout';
 import Login from './AuthModule/Components/Login/Login';
-import ForgetPass from './AuthModule/Components/ForgetPass/ForgetPass';
+import ChangePass from './AuthModule/Components/ChangePass/ChangePass';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import ProtectedRoute from './AuthModule/Components/ProtectedRoute/ProtectedRoute';
@@ -57,7 +57,8 @@ function App() {
       children:[
         {index: true, element:<Login saveAdminData={saveAdminData}/>},
         {path: "login", element:<Login saveAdminData={saveAdminData}/>},
-        {path: "forget-pass",element:<ForgetPass/>},
+        {path: "change-pass",element:<ChangePass/>},
+        // {path: "Forget-pass",element:<ForgetPass/>},
       ]
     }
   ])
