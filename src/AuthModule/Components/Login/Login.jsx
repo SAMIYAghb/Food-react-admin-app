@@ -1,7 +1,7 @@
 import axios from 'axios';
 import logo from '../../../assets/images/logo4-3.png';
 import { useForm } from "react-hook-form"
-import { apiUrl } from '../../../constants/ApiUrl';
+import { baseUrl } from '../../../Constants/ApiUrl';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,7 +22,7 @@ const Login = ({saveAdminData}) => {
     // console.log(watch("email"))
     // console.log(watch("password"))
     await axios
-    .post(apiUrl + "Login", data)
+    .post(baseUrl + "Login", data)
     .then((response) => {
       setTimeout(toast("Congratulations! You are logIn"), 2000);
       console.log(response.data.token);
