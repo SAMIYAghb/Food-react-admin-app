@@ -4,7 +4,7 @@ import Navbar from './../Navbar/Navbar';
 import Header from './../Header/Header';
 
 
-const MasterLayout = () => {
+const MasterLayout = ({adminData}) => {
 
   return (
    <div className="container-fluid">
@@ -18,7 +18,7 @@ const MasterLayout = () => {
 
         <div className="col-md-10">
           <div>
-            <Navbar/>
+            <Navbar adminData={adminData}/>
             <Header/>
             <Outlet/>
           </div>

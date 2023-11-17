@@ -3,10 +3,12 @@ import logo from '../../../assets/images/logo4-3.png';
 import { useForm } from "react-hook-form"
 import { apiUrl } from '../../../constants/ApiUrl';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-const Login = () => {
-
+const Login = ({saveAdminData}) => {
+  
   const navigate = useNavigate();
   const {
     register, //contient the data of the form
@@ -14,7 +16,7 @@ const Login = () => {
     // watch,
     formState: { errors },
   } = useForm()
-
+  
   const onSubmit = async(data) => {
     console.log(data)
     // console.log(watch("email"))
@@ -22,17 +24,27 @@ const Login = () => {
     await axios
     .post(apiUrl + "Login", data)
     .then((response) => {
-      console.log(response);
+      setTimeout(toast("Congratulations! You are logIn"), 2000);
+      console.log(response.data.token);
+      const adminToken = localStorage.setItem('adminToken', response.data.token )
+      saveAdminData();
       navigate('/dashboard');
     })
     .catch((error)=>{
-        console.log(error.response.data.message);  
-    });
-    
+        // console.log(error.response.data.message);
+        toast(error.response.data.message); 
+    });  
   }
 
   return (
     <div className="auth-container container-fluid">
+        <ToastContainer 
+        position="top-right" 
+        autoClose={3000}
+        closeOnClick
+        draggable
+        theme="light"
+        />
         <div className="row bg-overlay vh-100 justify-content-center align-items-center">
           <div className="col-md-6">
             <div className="bg-white p-2">
@@ -50,8 +62,9 @@ const Login = () => {
                       pattern:/^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/
                      })}
                      type="email"
+                     name="email"
                      className="form-control" 
-                      placeholder="Enter your E-mail"/>
+                    placeholder="Enter your E-mail"/>
 
                      {errors.email && errors.email.type === "required" && (<span className='text-danger '>Email is required</span>)}
 
@@ -65,6 +78,7 @@ const Login = () => {
                       // minLength:4,
                      })}
                      type="password"
+                     name="password"                 
                      className="form-control"  placeholder="Password"/>
                     {errors.password && errors.password.type === "required" && (<span className='text-danger'>Password is required</span>)}
                 </div>

@@ -14,3 +14,6 @@ login/ logOut/reset password:
 **validation: we use react-hook-form (we can use yup, joi, zod,,,)
 **API integration: we use swagger to test the API 
 
+encoding and decoding Token:
+login => call api => set Token in local storage 
+=> decode token =>navigate to home (code in logi and app )
