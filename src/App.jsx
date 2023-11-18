@@ -14,6 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 import ProtectedRoute from './AuthModule/Components/ProtectedRoute/ProtectedRoute';
 import RequestResetPass from './AuthModule/Components/RequestResetPass/RequestResetPass';
 import ResetPass from './AuthModule/Components/ResetPass/ResetPass';
+import SideBar from './SharedModule/Components/SideBar/SideBar';
 
 
 function App() {

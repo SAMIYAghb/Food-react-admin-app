@@ -4,13 +4,16 @@ https://www.figma.com/file/YausZ1ifm4F8tbA1pbDFCm/Task1%2FLanding-Page?type=desi
 http://upskilling-egypt.com:3002/docs
 
 superAdmin identifiant:
-
 superadmin@email.com
 @Password123!
 
+
+superAdmin identifiant:
+Samiya123@
+
+
 admin 
 upskilling.eg1@gmail.com
-Admin@124
 Admin@123
 
 **********Explications********

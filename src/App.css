@@ -4,3 +4,12 @@
 .bg-overlay{
   background: linear-gradient(to left, rgba(0,0,0,0.4), rgba(47,140,51,0.7));
 }
+.sidebar-container .ps-sidebar-container{
+  background: #1f263e;
+  color: #fff;
+  height: 100vh;
+  border-radius: 0 4rem 0 0 ;
+}
+.sidebar-container .ps-sidebar-container .ps-menu-button:hover{
+  background-color: rgba(47,140,51,0.7);
+}
