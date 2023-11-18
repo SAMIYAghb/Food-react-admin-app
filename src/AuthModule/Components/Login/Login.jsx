@@ -2,7 +2,7 @@ import axios from 'axios';
 import logo from '../../../assets/images/logo4-3.png';
 import { useForm } from "react-hook-form"
 import { baseUrl } from '../../../Constants/ApiUrl';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -24,15 +24,38 @@ const Login = ({saveAdminData}) => {
     await axios
     .post(baseUrl + "Login", data)
     .then((response) => {
-      setTimeout(toast("Congratulations! You are logIn"), 2000);
+
+      setTimeout(()=>{
+        toast.success("Congratulations! You are logIn",{
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored"
+        });
+      }, 1);
+      
       console.log(response.data.token);
       const adminToken = localStorage.setItem('adminToken', response.data.token )
+      console.log(adminToken);
       saveAdminData();
       navigate('/dashboard');
     })
     .catch((error)=>{
         // console.log(error.response.data.message);
-        toast(error.response.data.message); 
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored"
+        }); 
     });  
   }
 
@@ -84,7 +107,7 @@ const Login = ({saveAdminData}) => {
                 </div>
                 <div className="form-group my-3 d-flex justify-content-between">
                     <span>Register Now?</span>
-                    <span className='text-success'>Forgot Password?</span>
+                    <Link to='/request-reset-pass' className='text-success'>Forgot Password?</Link>
                 </div>
                 <div className="form-group my-3">
                   <button type="submit" className="btn btn-success w-100">

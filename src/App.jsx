@@ -12,6 +12,9 @@ import ChangePass from './AuthModule/Components/ChangePass/ChangePass';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import ProtectedRoute from './AuthModule/Components/ProtectedRoute/ProtectedRoute';
+import RequestResetPass from './AuthModule/Components/RequestResetPass/RequestResetPass';
+import ResetPass from './AuthModule/Components/ResetPass/ResetPass';
+
 
 function App() {
   const [adminData, setAdminData] = useState(null);
@@ -58,7 +61,10 @@ function App() {
         {index: true, element:<Login saveAdminData={saveAdminData}/>},
         {path: "login", element:<Login saveAdminData={saveAdminData}/>},
         {path: "change-pass",element:<ChangePass/>},
-        // {path: "Forget-pass",element:<ForgetPass/>},
+         // {path: "Forget-pass",element:<ForgetPass/>},
+        {path: "request-reset-pass",element:<RequestResetPass/>},
+        {path: "reset-pass",element:<ResetPass/>},
+       
       ]
     }
   ])

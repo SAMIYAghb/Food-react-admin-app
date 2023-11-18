@@ -34,7 +34,7 @@ const ChangePass = () => {
   }
 
   return (
-    <div className="auth-container container-fluid">
+    <div className="auth-container container-fluid">  
       <ToastContainer 
         position="top-right" 
         autoClose={3000}
@@ -86,10 +86,7 @@ const ChangePass = () => {
                     {errors.confirmNewPassword && errors.confirmNewPassword.type === "required" && (<span className='text-danger'>Confirm New Password is required</span>)}
                 </div>
 
-                <div className="form-group my-3 d-flex justify-content-between">
-                    <span>Register Now?</span>
-                    <span className='text-success'>Forgot Password?</span>
-                </div>
+                
                 <div className="form-group my-3">
                   <button type="submit" className="btn btn-success w-100">
                     Change password
@@ -99,7 +96,7 @@ const ChangePass = () => {
             </div>
       </div>
     </div>
-</div>
+    </div>
   )
 }
 
