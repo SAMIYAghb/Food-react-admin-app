@@ -13,3 +13,6 @@
 .sidebar-container .ps-sidebar-container .ps-menu-button:hover{
   background-color: rgba(47,140,51,0.7);
 }
+.modal-header{
+  border-bottom: none !important;
+}

@@ -40,7 +40,7 @@ const Login = ({saveAdminData}) => {
       
       console.log(response.data.token);
       const adminToken = localStorage.setItem('adminToken', response.data.token )
-      console.log(adminToken);
+      // console.log(adminToken);
       saveAdminData();
       navigate('/dashboard');
     })
@@ -72,7 +72,7 @@ const Login = ({saveAdminData}) => {
           <div className="col-md-6">
             <div className="bg-white p-2">
               <div className="logo-cont text-center">
-                  <img src={logo} className='w-25' alt="logo" />
+                  <img src={logo} className='w-50' alt="logo" />
               </div>
               <form onSubmit={handleSubmit(onSubmit)} 
               action="" className="m-auto w-75">

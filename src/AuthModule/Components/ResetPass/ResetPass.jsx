@@ -80,7 +80,7 @@ const ResetPass = () => {
                             {...register("seed",
                             { required: true,
                             })}
-                            type="text"
+                            // type="text"
                             name="seed"                 
                             className="form-control"  placeholder="OTP"/>
                             {errors.seed && errors.seed.type === "required" && (<span className='text-danger'>OTP is required</span>)}

@@ -30,7 +30,7 @@ function App() {
   let saveAdminData =() => {
       const adminToken=  localStorage.getItem('adminToken');
       const decodedAdminToken = jwtDecode(adminToken); // decode your token
-      console.log(decodedAdminToken);
+      // console.log(decodedAdminToken);
       setAdminData(decodedAdminToken);
   }
 

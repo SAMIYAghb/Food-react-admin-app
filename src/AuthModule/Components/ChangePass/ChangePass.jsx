@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ChangePass = () => {
+const ChangePass = ({handleClose}) => {
   const navigate = useNavigate();
   const {
     register, //contient the data of the form
@@ -22,19 +22,39 @@ const ChangePass = () => {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`
       }
     })
-    
     .then((response) => {
       console.log(response);
+      handleClose();
+      toast.success("Password change successfully",{
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: "undefined",
+        theme: "colored"
+      });
       navigate('/login');
      })
     .catch((error)=>{
         // console.log(error);
-        toast(error.response.data.message); 
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored"
+        }); 
     });  
   }
 
   return (
-    <div className="auth-container container-fluid">  
+    <>
+    {/*  <div className="auth-container container-fluid">   */}
       <ToastContainer 
         position="top-right" 
         autoClose={3000}
@@ -42,11 +62,11 @@ const ChangePass = () => {
         draggable
         theme="light"
         />
-    <div className="bg-overlay row vh-100 justify-content-center align-items-center">
-      <div className="col-md-6">
+    <div className="row  justify-content-center align-items-center">
+      {/* <div className="col-md-6"> */}
       <div className="bg-white p-2">
               <div className="logo-cont text-center">
-                  <img src={logo} className='w-25' alt="logo" />
+                  <img src={logo} className='w-50' alt="logo" />
               </div>
               <form onSubmit={handleSubmit(onSubmit)} 
               action="" className="m-auto w-75">
@@ -58,8 +78,7 @@ const ChangePass = () => {
                     {...register("oldPassword",
                      { required: true,
                      })}
-                     type="password"
-                     name="password"                 
+                     type="password"                
                      className="form-control"  placeholder="Old Password"/>
                     {errors.oldPassword && errors.oldPassword.type === "required" && (<span className='text-danger'>Old Password is required</span>)}
                 </div>
@@ -69,8 +88,7 @@ const ChangePass = () => {
                     {...register("newPassword",
                      { required: true,
                      })}
-                     type="password"
-                     name="password"                 
+                     type="password"                
                      className="form-control"  placeholder="New Password"/>
                     {errors.newPassword && errors.newPassword.type === "required" && (<span className='text-danger'>New Password is required</span>)}
                 </div>
@@ -81,7 +99,7 @@ const ChangePass = () => {
                      { required: true,
                      })}
                      type="password"
-                     name="password"                 
+               
                      className="form-control"  placeholder="Confirm New Password"/>
                     {errors.confirmNewPassword && errors.confirmNewPassword.type === "required" && (<span className='text-danger'>Confirm New Password is required</span>)}
                 </div>
@@ -94,10 +112,10 @@ const ChangePass = () => {
                 </div>            
               </form>
             </div>
-      </div>
+      {/* </div> */}
     </div>
-    </div>
-  )
+    {/* </div> */}
+    </>)
 }
 
 export default ChangePass
