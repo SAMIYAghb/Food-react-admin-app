@@ -22,7 +22,7 @@ const Login = ({saveAdminData}) => {
     // console.log(watch("email"))
     // console.log(watch("password"))
     await axios
-    .post(baseUrl + "Login", data)
+    .post(baseUrl + "Users/Login", data)
     .then((response) => {
 
       setTimeout(()=>{

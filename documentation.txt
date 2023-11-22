@@ -44,3 +44,11 @@ chaque API apres avoir fait Login,
  **ay API ba3d mabti3mil Login,
  El backend Biyistana minik Token 
  ***************************************
+
+ Pour tester data swagger API:
+ connecter sur login sur swager avec les identifiants admin
+  => copier le token=> 
+ cliquer sur le boutton authorize en haut et coller le token dans le champs
+ value => 
+ là tu est autorisé a ajouter une category par 
+ exemple ou un usertc

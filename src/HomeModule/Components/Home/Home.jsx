@@ -5,7 +5,7 @@ const Home = ({title, paragraph}) => {
   return (
     <>
     <Header 
-    title={'Receipes Items!'}
+    title={'Welcome upskilling!'}
      paragraph={'This is a welcoming screen for the entry of the application , you can now see the options'} />
 {/* home content */}
       <div className="content row mx-4 align-items-center justify-content-between rounded-3 p-4">

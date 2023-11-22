@@ -17,7 +17,7 @@ const RequestResetPass = () => {
     const onSubmit = async(data) => {
         console.log(data)
         await axios
-          .post(baseUrl + "Reset/Request", data)
+          .post(baseUrl + "Users/Reset/Request", data)
           .then((response) => {
             console.log(response);
             navigate('/reset-pass');

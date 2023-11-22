@@ -16,7 +16,7 @@ const ResetPass = () => {
     const onSubmit = async(data) => {
         console.log(data)
         await axios
-        .post(baseUrl + "Reset", data)        
+        .post(baseUrl + "Users/Reset", data)        
         .then((response) => {
           console.log(response);
           setTimeout(()=>{

@@ -17,7 +17,7 @@ const ChangePass = ({handleClose}) => {
   const onSubmit = async(data) => {
     // console.log(data)
     await axios
-    .put(baseUrl + "ChangePassword", data,{
+    .put(baseUrl + "Users/ChangePassword", data,{
       headers:{
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`
       }
