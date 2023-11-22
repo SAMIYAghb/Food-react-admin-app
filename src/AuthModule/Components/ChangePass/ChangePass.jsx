@@ -82,7 +82,6 @@ const ChangePass = ({handleClose}) => {
                      className="form-control"  placeholder="Old Password"/>
                     {errors.oldPassword && errors.oldPassword.type === "required" && (<span className='text-danger'>Old Password is required</span>)}
                 </div>
-
                 <div className="form-group my-3">
                     <input 
                     {...register("newPassword",

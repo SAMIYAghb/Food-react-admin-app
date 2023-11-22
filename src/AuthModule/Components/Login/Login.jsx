@@ -18,7 +18,7 @@ const Login = ({saveAdminData}) => {
   } = useForm();
   
   const onSubmit = async(data) => {
-    console.log(data)
+    // console.log(data)
     // console.log(watch("email"))
     // console.log(watch("password"))
     await axios

@@ -14,25 +14,24 @@ import { jwtDecode } from 'jwt-decode';
 import ProtectedRoute from './AuthModule/Components/ProtectedRoute/ProtectedRoute';
 import RequestResetPass from './AuthModule/Components/RequestResetPass/RequestResetPass';
 import ResetPass from './AuthModule/Components/ResetPass/ResetPass';
-import SideBar from './SharedModule/Components/SideBar/SideBar';
 
 
 function App() {
   const [adminData, setAdminData] = useState(null);
-
-  //handle the refresh problem(quant on fait refrech le adminData = null mais avec le useEffect on obtien les detail de adminData)
-  useEffect(()=>{
-    if(localStorage.getItem("adminToken")){
-      saveAdminData()
-    }
-  },[])
-
+// console.log(adminData);
   let saveAdminData =() => {
       const adminToken=  localStorage.getItem('adminToken');
       const decodedAdminToken = jwtDecode(adminToken); // decode your token
       // console.log(decodedAdminToken);
       setAdminData(decodedAdminToken);
   }
+
+  //handle the refresh problem(quant on fait refrech le adminData = null mais avec le useEffect on obtien les detail de adminData)
+  useEffect(()=>{
+    if(localStorage.getItem("adminToken")){
+      saveAdminData();
+    }
+  },[]) 
 
   const routes = createBrowserRouter([     
     {
@@ -52,17 +51,17 @@ function App() {
     },
     {
       path:"/",
-      element: (
-          // <ProtectedRoute adminData={adminData}>
-            <AuthLayout/>   
-          // </ProtectedRoute>
-      ),
+    //   element: (
+    //     // <ProtectedRoute adminData={adminData}>
+    //       <AuthLayout/>   
+    //     // </ProtectedRoute>
+    // ),
+      element: <AuthLayout/>,
       errorElement: <NotFound/>,
       children:[
         {index: true, element:<Login saveAdminData={saveAdminData}/>},
         {path: "login", element:<Login saveAdminData={saveAdminData}/>},
         {path: "change-pass",element:<ChangePass/>},
-         // {path: "Forget-pass",element:<ForgetPass/>},
         {path: "request-reset-pass",element:<RequestResetPass/>},
         {path: "reset-pass",element:<ResetPass/>},
        

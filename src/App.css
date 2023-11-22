@@ -1,5 +1,7 @@
 .auth-container{
   background-image: url('assets/images/hero.png'); 
+  background-size: cover;
+  background-position: 100% 100%;
 }
 .bg-overlay{
   background: linear-gradient(to left, rgba(0,0,0,0.4), rgba(47,140,51,0.7));
@@ -15,4 +17,14 @@
 }
 .modal-header{
   border-bottom: none !important;
+}
+.bg-header{
+  background-color: rgba(0, 146, 71, 1);
+  border-radius: 20px;
+  color: #fff;
+  /* background-size: cover;
+  background-position: 100% 100%; */
+}
+.content{
+  background-color: rgba(240, 255, 239, 1);
 }
