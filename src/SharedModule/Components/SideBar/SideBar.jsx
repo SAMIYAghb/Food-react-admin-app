@@ -25,7 +25,6 @@ const SideBar = () => {
   return (
     <div className="sidebar-container">
       {/* modal */}
-      
       <Modal
         show={show}
         onHide={handleClose}
@@ -38,6 +37,7 @@ const SideBar = () => {
         </Modal.Body>
       </Modal>
       {/*end modal */}
+      
     <Sidebar collapsed={isCollapsed}>
         <Menu  menuItemStyles={{
             button: {

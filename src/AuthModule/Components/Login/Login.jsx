@@ -80,14 +80,14 @@ const Login = ({saveAdminData}) => {
                 <p>Welcome Back! Please enter your details</p>
                 <div className="form-group my-3">
                     <input 
-                    {...register("email",
-                     { required: true,
-                      pattern:/^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/
-                     })}
-                     type="email"
-                     name="email"
-                     className="form-control" 
-                    placeholder="Enter your E-mail"/>
+                      {...register("email",
+                      { required: true,
+                        pattern:/^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/
+                      })}
+                      type="email"
+                      name="email"
+                      className="form-control" 
+                      placeholder="Enter your E-mail"/>
 
                      {errors.email && errors.email.type === "required" && (<span className='text-danger '>Email is required</span>)}
 
