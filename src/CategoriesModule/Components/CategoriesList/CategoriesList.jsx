@@ -1,55 +1,67 @@
-
 import Header from "./../../../SharedModule/Components/Header/Header";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../../Constants/ApiUrl";
 import axios from "axios";
-import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
-import Modal from 'react-bootstrap/Modal';
+import nodata from "../../../assets/images/nodata.png";
+import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { toast } from 'react-toastify';
-
-
+import { toast } from "react-toastify";
+import Nodata from "./../../../SharedModule/Components/Nodata/Nodata";
 
 const CategoriesList = ({ title, paragraph }) => {
-  const {register,
-          handleSubmit,
-          formState :{errors}} = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const [categoriesList, setCategoriesList] = useState([]);
+  const[itemId, setItemId] = useState(0);
   // modal
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [modalState, setModalState] = useState("close");
+
+  const showAddModal = () => {
+    setModalState("modal-one");
+  };
+  const showDeleteModal = (id) => {
+    // console.log(id, "deleted");
+    setItemId(id)
+    setModalState("modal-two");
+  };
+  const handleClose = () => setModalState("close");
+  // const [show, setShow] = useState(false);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
   // modal
-  const onSubmit = async(data)=>{
-      // console.log(data);
-      await axios
-      .post(baseUrl + 'Category',data, {
-        headers:{
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-        }
+  const onSubmit = async (data) => {
+    // console.log(data);
+    await axios
+      .post(baseUrl + "Category", data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
       })
-      .then((response)=>{
+      .then((response) => {
         console.log(response);
         handleClose();
-        getCategories();// update the list: mise a jour de la liste des categories; permet à la nouvelle category apparaitre dans la list
-        toast.success("Category added successfully",{
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored"
-        });
+        getCategoriesList(); // update the list: mise a jour de la liste des categories; permet à la nouvelle category apparaitre dans la list
+        // toast.success("Category added successfully", {
+        //   position: "top-right",
+        //   autoClose: 3000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: "undefined",
+        //   theme: "colored",
+        // });
       })
-      .catch((error)=>{
+      .catch((error) => {
         console.log(error);
       });
-    }
+  };
 
-  const getCategories = async () => {
+  const getCategoriesList = async () => {
     await axios
       .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
         headers: {
@@ -66,9 +78,28 @@ const CategoriesList = ({ title, paragraph }) => {
       });
   };
 
-  // getCategories()
-  useEffect(() => {    
-    getCategories();
+  const deleteCategory = async(itemId) => {
+    // console.log(itemId);
+    await axios
+    .delete(baseUrl + `category/${itemId}`, 
+    {
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+      }
+    })
+    .then((response)=>{
+        console.log(response);
+        handleClose();
+        getCategoriesList();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  // getCategoriesList()
+  useEffect(() => {
+    getCategoriesList();
   }, []);
 
   return (
@@ -79,9 +110,9 @@ const CategoriesList = ({ title, paragraph }) => {
           "You can now add your items that any user can order it from the Application and you can edit"
         }
       />
-       {/* modal */}
-       <Modal
-        show={show}
+      {/* modal Add New Category*/}
+      <Modal
+        show={modalState === "modal-one"}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
@@ -91,23 +122,52 @@ const CategoriesList = ({ title, paragraph }) => {
           <h3>Add new category</h3>
           <p className="text-muted">Welcome Back! Please enter your details</p>
           <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-group my-3">
-                    <input 
-                    {...register("name",
-                    { required: true})}
-                    type="text"
-                    placeholder="Category Name"
-                    className="form-control"/>
-                    {errors.name && errors.name.type === "required" && (<span className='text-danger '>Category name is required</span>)}
-              </div>
-              <div className="form-group my-3"> 
+            <div className="form-group my-3">
+              <input
+                {...register("name", { required: true })}
+                type="text"
+                placeholder="Category Name"
+                className="form-control"
+              />
+              {errors.name && errors.name.type === "required" && (
+                <span className="text-danger ">Category name is required</span>
+              )}
+            </div>
+            <div className="form-group my-3">
               <button className="btn btn-success w-100">Save</button>
-              </div>
-              
+            </div>
           </form>
         </Modal.Body>
       </Modal>
-      {/*end modal */}
+      {/*end modal  Add New Category*/}
+      {/* modal delete Category*/}
+      <Modal
+        show={modalState === "modal-two"}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Body>
+          <Modal.Header closeButton></Modal.Header>
+          <div className="text-center">
+            <img src={nodata} alt="dalate-img" className="w-50" />
+            <h3>Delete This Category?</h3>
+            <p className="text-muted">
+              are you sure you want to delete this item ? if you are sure just
+              click on delete it
+            </p>
+            <div className="text-end">
+              <button 
+                onClick={()=>{deleteCategory(itemId)}}
+                className="btn btn-outline-danger w-50 ">
+                Delete this item
+              </button>
+            </div>
+            
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/*end modal  delete New Category*/}
 
       <div className="row align-items-center     justify-content-between rounded-3 p-4">
         <div className="col-md-6">
@@ -115,45 +175,43 @@ const CategoriesList = ({ title, paragraph }) => {
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
-          <button 
-          onClick={handleShow}
-          className="btn btn-success px-5 "> 
-              Add New Category
-              <i className=" px-2 fa fa-arrow-right" aria-hidden="true"></i>
-            
+          <button onClick={showAddModal} className="btn btn-success px-5 ">
+            Add New Category
+            <i className=" px-2 fa fa-arrow-right" aria-hidden="true"></i>
           </button>
         </div>
 
         <div className="">
-          {
-            categoriesList.length > 0 
-            ?
-            (<table className="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Category Name</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categoriesList.map((category) => ( 
-                <>
-                  <tr key={category.id}>
-                    <th scope='row'>{category.id}</th>
-                    <td>{category.name}</td>
-                    <td><i className="">1</i>
-                    <i className="">2</i>
-                    </td>
-                  </tr>
-                </>
-              ))}
-            </tbody> 
-            </table>)
-            : 
-            (<Nodata/>)
-  
-          }
+          {categoriesList.length > 0 ? (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Category Name</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categoriesList.map((category) => (
+                  <>
+                    <tr key={category.id}>
+                      <th scope="row">{category.id}</th>
+                      <td>{category.name}</td>
+                      <td className=" ">
+                        <i className="fa fa-edit text-warning mx-5"></i>
+                        <i
+                          onClick={()=>{showDeleteModal(category.id)}}
+                          className="fa fa-trash text-danger"
+                        ></i>
+                      </td>
+                    </tr>
+                  </>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <Nodata />
+          )}
         </div>
       </div>
     </>
