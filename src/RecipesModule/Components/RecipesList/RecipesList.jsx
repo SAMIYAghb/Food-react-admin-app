@@ -4,15 +4,20 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/ApiUrl";
+import { toast } from 'react-toastify';
+import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 
 
 const RecipesList = ({title, paragraph}) => {
+  // console.log(categoriesList , 'from recipe list');
   // Modal
    const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   // Modal
   const[recipesList, setRecipesList] = useState([]);
+  const[tagsList, setTagsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
   const {
     register,
     handleSubmit,
@@ -21,30 +26,73 @@ const RecipesList = ({title, paragraph}) => {
 
   const onSubmit = async (data) =>{
     console.log(data);
+    await axios
+    .post(baseUrl + 'Recipe', data,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        "Content-type": "multipart/form-data",
+      },
+    }
+    )
+    .then((response)=>{
+      handleClose();
+      getRecipesList();
+      console.log(response, 'recipe');
+      // toast.success("Recipe added successfully", {
+      //     position: "top-right",
+      //     autoClose: 3000,
+      //     hideProgressBar: false,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     progress: "undefined",
+      //     theme: "colored",
+      //   });
+
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
   }
 
-  // const getTagsList = async() =>{
-  //   await axios
-  //   .get(baseUrl + 'tag')
-  //   .then((response)=>{
-  //     console.log(response.data);
-  //   })
-  //   .catch((error) =>{
-  //     console.log(error);
-  //   })
-  // }
-  // getTagsList();
+  const getTagsList = async() =>{
+    await axios
+    .get(baseUrl + 'tag')
+    .then((response)=>{
+      // console.log(response.data, 'tags');
+      setTagsList(response.data);
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+  }
+
+  const getCategoriesList = async () => {
+    await axios
+      .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
+        headers: {
+          //pour obtenir les caterories on doit étre login 'authorized'
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.data, 'to get category id from recipeListe');
+        setCategoriesList(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const getRecipesList = async() =>{
     await axios
-    .get(baseUrl + 'Recipe',{
+    .get(baseUrl + 'Recipe/?pageSize=10&pageNumber=1',{
       headers: {
       Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      // "content-type": "multipart/form-data",
     }},
     )
     .then((response)=>{
-      console.log(response.data.data);
+      console.log(response.data.data , 'recipesList');
       setRecipesList(response.data.data);
     })
     .catch((error) =>{
@@ -54,7 +102,10 @@ const RecipesList = ({title, paragraph}) => {
 
   useEffect(() =>{
     getRecipesList();
+    getCategoriesList();
+    getTagsList();//a confirmer si c la quand doit appeler les tags?
   },[]);
+
   return (
   <>
   <Header title={'Receipes Items!'} 
@@ -108,45 +159,61 @@ const RecipesList = ({title, paragraph}) => {
               )}
             </div>
             
+            <label>Select Tag:</label>
             <select 
             {...register("tagId", { required: true })}
             aria-label="Default select example"
             type="number"
             className="form-select"
             >
-              <option>Select Tag</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              {
+                tagsList.map((tag) =>(
+                  <>
+                  <option key={tag.id} value={tag.id}>{tag.id}</option>
+                  </>
+                ))
+              }
+
             </select>
             {errors.tagId && errors.tagId.type === "required" && (
                 <span className="text-danger ">tagId is required</span>
               )}
 
+              <label className=" mt-3">Select category ID:</label>
             <select 
               {...register("categoriesIds", { required: true })}
               aria-label="Default select example"
               type="number"
-              className="form-select mt-3"
+              className="form-select"
               >
-                <option>Select category ID</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                {
+                  categoriesList.map((category)=>(
+                    <>
+                      <option key={category.id} value={category.id}>{category.id}</option>
+                    </>
+                  ))
+                }
             </select>
               {errors.categoriesIds && errors.categoriesIds.type === "required" && (
                   <span className="text-danger ">Category ID is required</span>
                 )}
 
-            <div className="mb-3">
-              <label htmlFor="formFile" className="form-label mt-3">
-              Choose a Item Image to Upload:</label>
-              <input className="form-control" type="file" id="formFile"/>
-            </div>   
+              <div className="mb-3">
+                <label htmlFor="formFile" className="form-label mt-3">
+                Choose a Item Image to Upload:</label>
+                <input
+                {...register("recipeImage", { required: true })}
+                className="form-control" type="file" id="formFile"/>
+              </div>  
+              {errors.recipeImage && errors.recipeImage.type === "required" && (
+                    <span className="text-danger ">Recipe image is required</span>
+                  )} 
 
             <div className="form-group my-3 text-end">
-              <button className="btn btn-outline-danger mx-3">Cancel</button>
-              <button className="btn btn-success ">Save</button>
+              <button
+              onClick={handleClose} 
+              className="btn btn-outline-danger mx-3">Cancel</button>
+              <button type="submit" className="btn btn-success ">Save</button>
             </div>
           </form>
         </Modal.Body>
@@ -166,7 +233,10 @@ const RecipesList = ({title, paragraph}) => {
         </div>
 
         <div className="">
-      
+      {
+        recipesList.length > 0 
+        ? (
+
             <table className="table">
               <thead>
                 <tr className="text-center">
@@ -178,27 +248,38 @@ const RecipesList = ({title, paragraph}) => {
                   <th scope="col">Category</th>
                 </tr>
               </thead>
-              <tbody>
-                
+
+              <tbody>            
                 {
                   recipesList.map((recipe)=>(
                     <>
                     <tr className="text-center" key={recipe.id}>
                       <th scope="row">{recipe.name}</th>
-                      <td>{recipe.imagePath}</td>
+                      <td>
+                        <img src={recipe.imagePath} alt="recipe-image"
+                        className="w-50" />
+                        {/* {recipe.imagePath} */}
+                        </td>
                       <td>{recipe.price}</td>
                       <td>{recipe.description}</td>
                       <td>tag</td>
-                      {/* <td>tag</td> */}
+                      <td>category</td>
                       {/* <td>{recipe.tag}</td> */}
-                      {/* <td>{recipe.category.name}</td> */}
+                      <td>{recipe.category.name}</td>
                     </tr>
                     </>
                   ))
                 }
-               
+   
               </tbody>
             </table>
+
+          )
+          : (
+              <Nodata />
+          )
+      }
+            
         
         </div>
       </div>

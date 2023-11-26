@@ -38,7 +38,7 @@ function App() {
       path:"dashboard",
       element:(
           <ProtectedRoute adminData={adminData}>
-            <MasterLayout adminData={adminData}/>
+            <MasterLayout adminData={adminData} />
           </ProtectedRoute>
       ),
       errorElement: <NotFound/>,
