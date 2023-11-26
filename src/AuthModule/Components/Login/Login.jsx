@@ -40,7 +40,7 @@ const Login = ({saveAdminData}) => {
       
       console.log(response.data.token);
       const adminToken = localStorage.setItem('adminToken', response.data.token )
-      // console.log(adminToken);
+      console.log(adminToken);
       saveAdminData();
       navigate('/dashboard');
     })

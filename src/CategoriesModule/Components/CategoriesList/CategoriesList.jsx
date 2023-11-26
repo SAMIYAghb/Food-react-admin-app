@@ -169,7 +169,7 @@ const CategoriesList = ({ title, paragraph }) => {
       </Modal>
       {/*end modal  delete New Category*/}
 
-      <div className="row align-items-center     justify-content-between rounded-3 p-4">
+      <div className="row align-items-center justify-content-between rounded-3 p-4">
         <div className="col-md-6">
           <h3>Categories Table Details</h3>
           <p>You can check all details</p>
