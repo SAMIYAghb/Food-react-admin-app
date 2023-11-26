@@ -2,6 +2,8 @@ import Header from "../../../SharedModule/Components/Header/Header";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { baseUrl } from "../../../Constants/ApiUrl";
 
 
 const RecipesList = ({title, paragraph}) => {
@@ -10,6 +12,7 @@ const RecipesList = ({title, paragraph}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   // Modal
+  const[recipesList, setRecipesList] = useState([]);
   const {
     register,
     handleSubmit,
@@ -20,6 +23,38 @@ const RecipesList = ({title, paragraph}) => {
     console.log(data);
   }
 
+  // const getTagsList = async() =>{
+  //   await axios
+  //   .get(baseUrl + 'tag')
+  //   .then((response)=>{
+  //     console.log(response.data);
+  //   })
+  //   .catch((error) =>{
+  //     console.log(error);
+  //   })
+  // }
+  // getTagsList();
+
+  const getRecipesList = async() =>{
+    await axios
+    .get(baseUrl + 'Recipe',{
+      headers: {
+      Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      // "content-type": "multipart/form-data",
+    }},
+    )
+    .then((response)=>{
+      console.log(response.data.data);
+      setRecipesList(response.data.data);
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+  }
+
+  useEffect(() =>{
+    getRecipesList();
+  },[]);
   return (
   <>
   <Header title={'Receipes Items!'} 
@@ -103,6 +138,12 @@ const RecipesList = ({title, paragraph}) => {
                   <span className="text-danger ">Category ID is required</span>
                 )}
 
+            <div className="mb-3">
+              <label htmlFor="formFile" className="form-label mt-3">
+              Choose a Item Image to Upload:</label>
+              <input className="form-control" type="file" id="formFile"/>
+            </div>   
+
             <div className="form-group my-3 text-end">
               <button className="btn btn-outline-danger mx-3">Cancel</button>
               <button className="btn btn-success ">Save</button>
@@ -139,14 +180,22 @@ const RecipesList = ({title, paragraph}) => {
               </thead>
               <tbody>
                 
-                    <tr className="text-center" >
-                      <th scope="row">1</th>
-                      <td>2</td>
-                      <td>3</td>
-                      <td>4</td>
-                      <td>5</td>
-                      <td>6</td>
+                {
+                  recipesList.map((recipe)=>(
+                    <>
+                    <tr className="text-center" key={recipe.id}>
+                      <th scope="row">{recipe.name}</th>
+                      <td>{recipe.imagePath}</td>
+                      <td>{recipe.price}</td>
+                      <td>{recipe.description}</td>
+                      <td>tag</td>
+                      {/* <td>tag</td> */}
+                      {/* <td>{recipe.tag}</td> */}
+                      {/* <td>{recipe.category.name}</td> */}
                     </tr>
+                    </>
+                  ))
+                }
                
               </tbody>
             </table>
