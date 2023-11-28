@@ -47,8 +47,16 @@ const RecipesList = ({title, paragraph}) => {
 
   const onSubmit = async (data) =>{
     console.log(data);
+    const addFormData = new FormData();
+     addFormData.append("name", data["name"]); // Sent to backend
+     addFormData.append("price", data["price"]);
+     addFormData.append("description", data["description"]);
+     addFormData.append("tagId", data["tagId"]);
+     addFormData.append("categoriesIds", data["categoriesIds"]);
+     addFormData.append("recipeImage", data["recipeImage"][0]);
+
     await axios
-    .post(baseUrl + 'Recipe', data,{
+    .post(baseUrl + 'Recipe', addFormData,{
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         "Content-type": "multipart/form-data",
@@ -107,7 +115,7 @@ const RecipesList = ({title, paragraph}) => {
 
   const getRecipesList = async() =>{
     await axios
-    .get(baseUrl + 'Recipe/?pageSize=10&pageNumber=1',{
+    .get(baseUrl + 'Recipe/?pageSize=20&pageNumber=1',{
       headers: {
       Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
     }},
@@ -202,15 +210,15 @@ const RecipesList = ({title, paragraph}) => {
             
             <label>Select Tag:</label>
             <select 
-            {...register("tagId", { required: true })}
+            {...register("tagId", { required: true , valueAsNumber:true})}
             aria-label="Default select example"
             type="number"
             className="form-select"
             >
               {
-                tagsList.map((tag) =>(
+                tagsList?.map((tag) =>(
                   <>
-                  <option key={tag.id} value={tag.id}>{tag.id}</option>
+                  <option key={tag.id} value={tag.id}>{tag.name}</option>
                   </>
                 ))
               }
@@ -222,15 +230,15 @@ const RecipesList = ({title, paragraph}) => {
 
               <label className=" mt-3">Select category ID:</label>
             <select 
-              {...register("categoriesIds", { required: true })}
+              {...register("categoriesIds", { required: true, valueAsNumber:true })}
               aria-label="Default select example"
               type="number"
               className="form-select"
               >
                 {
-                  categoriesList.map((category)=>(
+                  categoriesList?.map((category)=>(
                     <>
-                      <option key={category.id} value={category.id}>{category.id}</option>
+                      <option key={category.id} value={category.id}>{category.name}</option>
                     </>
                   ))
                 }
@@ -243,7 +251,7 @@ const RecipesList = ({title, paragraph}) => {
                 <label htmlFor="formFile" className="form-label mt-3">
                 Choose a Item Image to Upload:</label>
                 <input
-                {...register("recipeImage", { required: true })}
+                {...register("recipeImage")}
                 className="form-control" type="file" id="formFile"/>
               </div>  
               {errors.recipeImage && errors.recipeImage.type === "required" && (
@@ -324,10 +332,10 @@ const RecipesList = ({title, paragraph}) => {
 
               <tbody>            
                 {
-                  recipesList.map((recipe)=>(
+                  recipesList.map((recipe, index)=>(
                     <>
                     <tr className="text-center" key={recipe.id}>
-                      <th scope="row">{recipe.id}</th>
+                      <th scope="row">{index + 1}</th>
                       <td scope="row">{recipe?.name}</td>
                       <td>
                         <div className="img-container">

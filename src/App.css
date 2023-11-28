@@ -19,11 +19,14 @@
   border-bottom: none !important;
 }
 .bg-header{
-  background-color: rgba(0, 146, 71, 1);
+  background-image: url('assets/images/header-bg-svg.svg');
   border-radius: 20px;
   color: #fff;
-  /* background-size: cover;
-  background-position: 100% 100%; */
+  background-size: cover;
+  background-position: 100% 100%;
+}
+.navbar-bg{
+  background-color:#efefef ;
 }
 .content{
   background-color: rgba(240, 255, 239, 1);
