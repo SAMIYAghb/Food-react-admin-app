@@ -10,8 +10,9 @@ import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 
 const RecipesList = ({title, paragraph}) => {
   // console.log(categoriesList , 'from recipe list');
+  const imgUrl = 'https://upskilling-egypt.com/'
   // Modal
-   const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   // Modal
@@ -93,7 +94,7 @@ const RecipesList = ({title, paragraph}) => {
     )
     .then((response)=>{
       console.log(response.data.data , 'recipesList');
-      setRecipesList(response.data.data);
+      setRecipesList(response?.data?.data);
     })
     .catch((error) =>{
       console.log(error);
@@ -102,15 +103,16 @@ const RecipesList = ({title, paragraph}) => {
 
   useEffect(() =>{
     getRecipesList();
+
     getCategoriesList();
     getTagsList();//a confirmer si c la quand doit appeler les tags?
   },[]);
 
   return (
   <>
-  <ToastContainer/>
-  <Header title={'Receipes Items!'} 
-  paragraph={'You can now add your items that any user can order it from the Application and you can edit'} />
+    <ToastContainer/>
+    <Header title={'Receipes Items!'} 
+    paragraph={'You can now add your items that any user can order it from the Application and you can edit'} />
   
     {/* modal Add New recipe*/}
       <Modal
@@ -241,12 +243,14 @@ const RecipesList = ({title, paragraph}) => {
             <table className="table">
               <thead>
                 <tr className="text-center">
-                  <th scope="col">Item Name</th>
+                  <th scope="col">#</th>
+                  <th scope="col">Recipe Name</th>
                   <th scope="col">Image</th>
                   <th scope="col">Price</th>
                   <th scope="col">Description</th>
                   <th scope="col">Tag</th>
                   <th scope="col">Category</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
 
@@ -255,18 +259,19 @@ const RecipesList = ({title, paragraph}) => {
                   recipesList.map((recipe)=>(
                     <>
                     <tr className="text-center" key={recipe.id}>
-                      <th scope="row">{recipe.name}</th>
+                      <th scope="row">{recipe.id}</th>
+                      <td scope="row">{recipe?.name}</td>
                       <td>
-                        <img src={recipe.imagePath} alt="recipe-image"
-                        className="w-50" />
-                        {/* {recipe.imagePath} */}
+                        <img src={imgUrl + recipe.imagePath} 
+                        alt="recipe-image"
+                        className="w-100 img-fluid" />
                         </td>
-                      <td>{recipe.price}</td>
-                      <td>{recipe.description}</td>
-                      <td>tag</td>
-                      <td>category</td>
-                      {/* <td>{recipe.tag}</td> */}
-                      <td>{recipe.category.name}</td>
+                      <td>{recipe?.price}</td>
+                      <td>{recipe?.description}</td>
+                      <td>{recipe.tag?.name}</td>
+                      <td>{recipe.category[0]?.name}</td>
+
+                      <td>Actions</td>
                     </tr>
                     </>
                   ))
