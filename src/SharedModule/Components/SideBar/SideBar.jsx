@@ -2,6 +2,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { useState } from 'react';
 import logo from '../../../assets/images/logo4-3.png';
+import togl from '../../../assets/images/3.png';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import ChangePass from './../../../AuthModule/Components/ChangePass/ChangePass';
@@ -47,19 +48,19 @@ const SideBar = () => {
               },
             },
           }}>
-        <MenuItem onClick={handleToggle}
-        // icon={<img className='' src={logo} alt="logo-img-toggle" />} 
-        icon={<i className='fa fa-bars'></i>} 
-        component={<Link to="/dashboard" />}>
+          <MenuItem onClick={handleToggle}
+          // icon={<img className='img-fluid icon-img-side' src={togl} alt="logo-img-toggle" />} 
+          icon={<i className='fa fa-bars'></i>} 
+          component={<Link to="/dashboard" />}>
           </MenuItem>
 
           <MenuItem icon={<i className='fa fa-home' aria-hidden='true'></i>} component={<Link to="/dashboard" />}> 
           Home</MenuItem>
           <MenuItem icon={<i className='fa fa-user' aria-hidden='true'></i>} component={<Link to="/dashboard/users" />}> 
           Users</MenuItem>
-          <MenuItem icon={<i className='fa fa-cube' aria-hidden='true'></i>} component={<Link to="/dashboard/recipes" />}> 
+          <MenuItem icon={<i className='fa fa-pizza-slice' aria-hidden='true'></i>} component={<Link to="/dashboard/recipes" />}> 
           Recipes</MenuItem>
-          <MenuItem icon={<i className='fa fa-calendar-days' aria-hidden='true'></i>} component={<Link to="/dashboard/categories" />}> 
+          <MenuItem icon={<i className='fa fa-burger' aria-hidden='true'></i>} component={<Link to="/dashboard/categories" />}> 
           Categories</MenuItem>
           <MenuItem 
           onClick={handleShow}

@@ -28,3 +28,6 @@
 .content{
   background-color: rgba(240, 255, 239, 1);
 }
+.img-container{
+  width: 80px;
+}

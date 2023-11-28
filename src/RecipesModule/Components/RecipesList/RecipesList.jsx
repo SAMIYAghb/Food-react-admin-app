@@ -5,23 +5,43 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/ApiUrl";
 import { toast, ToastContainer } from 'react-toastify';
+import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 
 
 const RecipesList = ({title, paragraph}) => {
   // console.log(categoriesList , 'from recipe list');
   const imgUrl = 'https://upskilling-egypt.com/'
+  const[itemId, setItemId] = useState(0);
   // Modal
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const [show, setShow] = useState(false);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
+  const [modalState, setModalState] = useState("close");
+
+  const showAddModal = () => {
+    setValue('name', null);
+    setValue('price', null);
+    setValue('description', null);
+    setValue('tagId', null);
+    setValue('categoriesIds', null);
+    setModalState("add-modal");
+  };
+  const showDeleteModal = (id) => {
+    // alert(id);
+    setItemId(id);
+    setModalState("delete-modal");
+  };
+  const handleClose = () => setModalState("close");
   // Modal
+
   const[recipesList, setRecipesList] = useState([]);
   const[tagsList, setTagsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -101,6 +121,24 @@ const RecipesList = ({title, paragraph}) => {
     })
   }
 
+  const deleteRecipe = async(itemId) => {
+    await axios
+    .delete(baseUrl + `Recipe/${itemId}`, 
+    {
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+      },
+    })
+    .then((response) =>{
+      // console.log(response);
+      handleClose();
+      getRecipesList();
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+  }
+
   useEffect(() =>{
     getRecipesList();
 
@@ -116,7 +154,7 @@ const RecipesList = ({title, paragraph}) => {
   
     {/* modal Add New recipe*/}
       <Modal
-        show={show}
+        show={modalState === "add-modal"}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
@@ -221,7 +259,37 @@ const RecipesList = ({title, paragraph}) => {
           </form>
         </Modal.Body>
       </Modal>
-      {/*end modal  Add New recipe*/}
+    {/*end modal  Add New recipe*/}
+    {/* modal delete recipe*/}
+      <Modal
+        show={modalState === "delete-modal"}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Body>
+          <Modal.Header closeButton></Modal.Header>
+          <div className="text-center">
+            <img
+             src={nodata} 
+             alt="dalate-img" className="w-50" />
+            <h3>Delete This Recipe?</h3>
+            <p className="text-muted">
+              are you sure you want to delete this item ? if you are sure just
+              click on delete it
+            </p>
+            <div className="text-end">
+              <button 
+                onClick={()=>{deleteRecipe(itemId)}}
+                className="btn btn-outline-danger w-50 ">
+                Delete this Recipe
+              </button>
+            </div>
+            
+          </div>
+        </Modal.Body>
+      </Modal>
+    {/*end modal delete recipe*/}
 
       <div className="row align-items-center justify-content-between rounded-3 p-4">
         <div className="col-md-6">
@@ -229,7 +297,7 @@ const RecipesList = ({title, paragraph}) => {
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
-          <button onClick={handleShow} className="btn btn-success px-5 ">
+          <button onClick={showAddModal} className="btn btn-success px-5 ">
             Add New Recipe
             <i className=" px-2 fa fa-arrow-right" aria-hidden="true"></i>
           </button>
@@ -262,16 +330,26 @@ const RecipesList = ({title, paragraph}) => {
                       <th scope="row">{recipe.id}</th>
                       <td scope="row">{recipe?.name}</td>
                       <td>
-                        <img src={imgUrl + recipe.imagePath} 
-                        alt="recipe-image"
-                        className="w-100 img-fluid" />
+                        <div className="img-container">
+                          <img src={imgUrl + recipe.imagePath} 
+                          alt="recipe-image"
+                          className="w-100 img-fluid" />
+                        </div>
+                        
                         </td>
                       <td>{recipe?.price}</td>
                       <td>{recipe?.description}</td>
                       <td>{recipe.tag?.name}</td>
                       <td>{recipe.category[0]?.name}</td>
-
-                      <td>Actions</td>
+                      <td>
+                      <i
+                        // onClick={()=>{showUpdateModal(category)}}
+                         className="fa fa-edit text-warning mx-5"></i>
+                        <i
+                          onClick={()=>{showDeleteModal(recipe.id)}}
+                          className="fa fa-trash text-danger"
+                        ></i>
+                      </td>
                     </tr>
                     </>
                   ))
