@@ -1,1 +1,1 @@
-export const baseUrl = 'http://upskilling-egypt.com:3002/api/v1/';
+export const baseUrl = 'https://upskilling-egypt.com/api/v1/';

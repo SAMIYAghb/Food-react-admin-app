@@ -1,7 +1,7 @@
 figma
 https://www.figma.com/file/YausZ1ifm4F8tbA1pbDFCm/Task1%2FLanding-Page?type=design&node-id=0-1&mode=design&t=Fv9UzssPcj7bBQZf-0
 
-http://upskilling-egypt.com:3002/docs
+https://upskilling-egypt.comprendre/docs
 
 superAdmin identifiant:
 superadmin@email.com
@@ -52,3 +52,6 @@ chaque API apres avoir fait Login,
  value => 
  là tu est autorisé a ajouter une category par 
  exemple ou un usertc
+
+
+

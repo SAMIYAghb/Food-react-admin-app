@@ -5,13 +5,14 @@ import axios from "axios";
 import nodata from "../../../assets/images/nodata.png";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import Nodata from "./../../../SharedModule/Components/Nodata/Nodata";
 
 const CategoriesList = ({ title, paragraph }) => {
   const {
     register,
     handleSubmit,
+    setValue,  //Vider la valeur expl: j'ai ajouté une category et je veux vider le champs juste après
     formState: { errors },
   } = useForm();
 
@@ -21,12 +22,21 @@ const CategoriesList = ({ title, paragraph }) => {
   const [modalState, setModalState] = useState("close");
 
   const showAddModal = () => {
+    setValue('name', null);
     setModalState("modal-one");
   };
+
   const showDeleteModal = (id) => {
     // console.log(id, "deleted");
     setItemId(id)
     setModalState("modal-two");
+  };
+
+  const showUpdateModal = (categoryItem) => {
+    // console.log(id, "updated");
+    setItemId(categoryItem.id);
+    setValue('name', categoryItem.name);
+    setModalState("modal-three");
   };
   const handleClose = () => setModalState("close");
   // const [show, setShow] = useState(false);
@@ -42,19 +52,19 @@ const CategoriesList = ({ title, paragraph }) => {
         },
       })
       .then((response) => {
-        console.log(response);
+        console.log(response);       
+        getCategoriesList(); // update the list: mise a jour de la liste des categories; permet à la nouvelle category d'apparaitre dans la list
+        toast.success("Category added successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored",
+        });
         handleClose();
-        getCategoriesList(); // update the list: mise a jour de la liste des categories; permet à la nouvelle category apparaitre dans la list
-        // toast.success("Category added successfully", {
-        //   position: "top-right",
-        //   autoClose: 3000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   progress: "undefined",
-        //   theme: "colored",
-        // });
       })
       .catch((error) => {
         console.log(error);
@@ -72,6 +82,16 @@ const CategoriesList = ({ title, paragraph }) => {
       .then((response) => {
         // console.log(response.data.data);
         setCategoriesList(response.data.data);
+        // toast.success("Category deleted successfully", {
+        //     position: "top-right",
+        //     autoClose: 3000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: "undefined",
+        //     theme: "colored",
+        //   });
       })
       .catch((error) => {
         console.log(error);
@@ -82,6 +102,26 @@ const CategoriesList = ({ title, paragraph }) => {
     // console.log(itemId);
     await axios
     .delete(baseUrl + `category/${itemId}`, 
+    {
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+      }
+    })
+    .then((response)=>{
+        console.log(response);
+        handleClose();
+        getCategoriesList();
+
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  const updateCategory = async(data) => {
+    // console.log(itemId);
+    await axios
+    .put(baseUrl + `category/${itemId}`, data,
     {
       headers:{
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`
@@ -104,6 +144,7 @@ const CategoriesList = ({ title, paragraph }) => {
 
   return (
     <>
+    <ToastContainer/>
       <Header
         title={"Categories Item"}
         paragraph={
@@ -134,7 +175,7 @@ const CategoriesList = ({ title, paragraph }) => {
               )}
             </div>
             <div className="form-group my-3">
-              <button className="btn btn-success w-100">Save</button>
+              <button className="btn btn-success w-100">Add new category</button>
             </div>
           </form>
         </Modal.Body>
@@ -167,7 +208,36 @@ const CategoriesList = ({ title, paragraph }) => {
           </div>
         </Modal.Body>
       </Modal>
-      {/*end modal  delete New Category*/}
+      {/*end modal  delete Category*/}
+      {/* modal update Category*/}
+      <Modal
+        show={modalState === "modal-three"}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Body>
+          <Modal.Header closeButton></Modal.Header>
+          <h3>Update category</h3>
+          <form onSubmit={handleSubmit(updateCategory)}>
+            <div className="form-group my-3">
+              <input
+                {...register("name", { required: true })}
+                type="text"
+                placeholder="Category Name"
+                className="form-control"
+              />
+              {errors.name && errors.name.type === "required" && (
+                <span className="text-danger ">Category name is required</span>
+              )}
+            </div>
+            <div className="form-group my-3">
+              <button className="btn btn-success w-100">Update category</button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+      {/*end modal update Category*/}
 
       <div className="row align-items-center justify-content-between rounded-3 p-4">
         <div className="col-md-6">
@@ -198,7 +268,9 @@ const CategoriesList = ({ title, paragraph }) => {
                       <th scope="row">{category.id}</th>
                       <td>{category.name}</td>
                       <td className=" ">
-                        <i className="fa fa-edit text-warning mx-5"></i>
+                        <i
+                        onClick={()=>{showUpdateModal(category)}}
+                         className="fa fa-edit text-warning mx-5"></i>
                         <i
                           onClick={()=>{showDeleteModal(category.id)}}
                           className="fa fa-trash text-danger"

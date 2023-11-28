@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/ApiUrl";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 
 
@@ -38,16 +38,16 @@ const RecipesList = ({title, paragraph}) => {
       handleClose();
       getRecipesList();
       console.log(response, 'recipe');
-      // toast.success("Recipe added successfully", {
-      //     position: "top-right",
-      //     autoClose: 3000,
-      //     hideProgressBar: false,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //     draggable: true,
-      //     progress: "undefined",
-      //     theme: "colored",
-      //   });
+      toast.success("Recipe added successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored",
+        });
 
     })
     .catch((error) =>{
@@ -108,6 +108,7 @@ const RecipesList = ({title, paragraph}) => {
 
   return (
   <>
+  <ToastContainer/>
   <Header title={'Receipes Items!'} 
   paragraph={'You can now add your items that any user can order it from the Application and you can edit'} />
   
