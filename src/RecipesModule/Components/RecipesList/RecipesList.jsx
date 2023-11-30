@@ -13,6 +13,9 @@ const RecipesList = ({title, paragraph}) => {
   // console.log(categoriesList , 'from recipe list');
   const imgUrl = 'https://upskilling-egypt.com/'
   const[itemId, setItemId] = useState(0);
+  //state for pagination
+  const [pagesArray, setPagesArray] = useState([]);
+
   // Modal
   // const [show, setShow] = useState(false);
   // const handleClose = () => setShow(false);
@@ -115,16 +118,26 @@ const RecipesList = ({title, paragraph}) => {
       });
   };
 
-  const getRecipesList = async() =>{
+  const getRecipesList = async(pageNo) =>{
     await axios
-    .get(baseUrl + 'Recipe/?pageSize=20&pageNumber=1',{
+    .get(baseUrl + 'Recipe',{
       headers: {
       Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-    }},
+    },
+      params:{
+        pageSize: 5,
+        pageNumber: pageNo,
+      }
+  },
     )
     .then((response)=>{
-      console.log(response.data.data , 'recipesList');
-      setRecipesList(response?.data?.data);
+      // console.log(response.data.data , 'recipesList');
+      let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
+        .fill()
+        .map((_,i )=> i+1);
+        setPagesArray(arrayOfNumberOfPages);
+        // console.log(pagesArray);
+        setRecipesList(response?.data?.data);
     })
     .catch((error) =>{
       console.log(error);
@@ -315,64 +328,94 @@ const RecipesList = ({title, paragraph}) => {
       {
         recipesList.length > 0 
         ? (
+          <div className="">
+              <table className="table">
+                <thead>
+                  <tr className="text-center">
+                    <th scope="col">#</th>
+                    <th scope="col">Recipe Name</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
 
-            <table className="table">
-              <thead>
-                <tr className="text-center">
-                  <th scope="col">#</th>
-                  <th scope="col">Recipe Name</th>
-                  <th scope="col">Image</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Tag</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>            
-                {
-                  recipesList.map((recipe, index)=>(
-                    <>
-                    <tr className="text-center" key={recipe.id}>
-                      <th scope="row">{index + 1}</th>
-                      <td scope="row">{recipe?.name}</td>
-                      <td>
-                        <div className="img-container">
-                          <img src={imgUrl + recipe.imagePath} 
-                          alt="recipe-image"
-                          className="w-100 img-fluid" />
-                        </div>
-                        
+                <tbody>            
+                  {
+                    recipesList.map((recipe, index)=>(
+                      <>
+                      <tr className="text-center" key={recipe.id}>
+                        <th scope="row">{index + 1}</th>
+                        <td scope="row">{recipe?.name}</td>
+                        <td>
+                          <div className="img-container">
+                            <img src={imgUrl + recipe.imagePath} 
+                            alt="recipe-image"
+                            className="w-100 img-fluid" />
+                          </div>
+                          
+                          </td>
+                        <td>{recipe?.price}</td>
+                        <td>{recipe?.description}</td>
+                        <td>{recipe.tag?.name}</td>
+                        <td>{recipe.category[0]?.name}</td>
+                        <td>
+                        {/* <i
+                          onClick={()=>{showUpdateModal(category)}}
+                          className="fa fa-edit text-warning mx-5"></i> */}
+                          <i
+                            onClick={()=>{showDeleteModal(recipe.id)}}
+                            className="fa fa-trash text-danger"
+                          ></i>
                         </td>
-                      <td>{recipe?.price}</td>
-                      <td>{recipe?.description}</td>
-                      <td>{recipe.tag?.name}</td>
-                      <td>{recipe.category[0]?.name}</td>
-                      <td>
-                      {/* <i
-                        onClick={()=>{showUpdateModal(category)}}
-                         className="fa fa-edit text-warning mx-5"></i> */}
-                        <i
-                          onClick={()=>{showDeleteModal(recipe.id)}}
-                          className="fa fa-trash text-danger"
-                        ></i>
-                      </td>
-                    </tr>
-                    </>
-                  ))
-                }
-   
-              </tbody>
-            </table>
-
+                      </tr>
+                      </>
+                    ))
+                  }
+    
+                </tbody>
+              </table>
+              {/* Pagination  */}
+              <nav aria-label="Page navigation example ">
+                <ul className="pagination justify-content-center">
+                <li className="page-item">
+                          <a className="page-link"
+                          aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                          </a>
+                </li>
+                  {
+                    pagesArray.map((pageNo) =>(
+                      <>
+                        <li onClick={()=>getRecipesList(pageNo)}
+                         key={pageNo} className="page-item">
+                          <a className="page-link">
+                            {pageNo}
+                          </a>
+                        </li>   
+                      </>
+                    ))
+                  }
+                  <li 
+                  className="page-item">
+                          <a className="page-link"
+                          aria-label="Next">
+                            <span aria-hidden="true">» </span>
+                          </a>
+                  </li>
+                  
+                </ul>
+              </nav>
+              {/* Pagination  */}
+          </div>
           )
           : (
               <Nodata />
           )
       }
-            
-        
         </div>
       </div>
   </>
