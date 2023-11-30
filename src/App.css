@@ -34,3 +34,6 @@
 .img-container{
   width: 80px;
 }
+.pag-clic{
+  cursor: pointer;
+}

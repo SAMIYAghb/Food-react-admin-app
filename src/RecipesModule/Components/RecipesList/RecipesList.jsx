@@ -15,6 +15,7 @@ const RecipesList = ({title, paragraph}) => {
   const[itemId, setItemId] = useState(0);
   //state for pagination
   const [pagesArray, setPagesArray] = useState([]);
+  const [searchString, setSearchString] = useState("");
 
   // Modal
   // const [show, setShow] = useState(false);
@@ -118,15 +119,16 @@ const RecipesList = ({title, paragraph}) => {
       });
   };
 
-  const getRecipesList = async(pageNo) =>{
+  const getRecipesList = async(pageNo, name) =>{
     await axios
     .get(baseUrl + 'Recipe',{
       headers: {
       Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
     },
       params:{
-        pageSize: 5,
-        pageNumber: pageNo,
+        pageSize: 5,//statique
+        pageNumber: pageNo, //dynamique
+        name: name,
       }
   },
     )
@@ -162,9 +164,14 @@ const RecipesList = ({title, paragraph}) => {
     })
   }
 
+  // reel time search filtration
+  const getNameValue = (input) =>{
+    // console.log(input.target.value);
+    setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
+    getRecipesList(1, input.target.value);
+  }
   useEffect(() =>{
-    getRecipesList();
-    
+    getRecipesList(1);   
   },[]);
 
   return (
@@ -325,97 +332,101 @@ const RecipesList = ({title, paragraph}) => {
         </div>
 
         <div className="">
-      {
-        recipesList.length > 0 
-        ? (
-          <div className="">
-              <table className="table">
-                <thead>
-                  <tr className="text-center">
-                    <th scope="col">#</th>
-                    <th scope="col">Recipe Name</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Tag</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody>            
-                  {
-                    recipesList.map((recipe, index)=>(
-                      <>
-                      <tr className="text-center" key={recipe.id}>
-                        <th scope="row">{index + 1}</th>
-                        <td scope="row">{recipe?.name}</td>
-                        <td>
-                          <div className="img-container">
-                            <img src={imgUrl + recipe.imagePath} 
-                            alt="recipe-image"
-                            className="w-100 img-fluid" />
-                          </div>
-                          
-                          </td>
-                        <td>{recipe?.price}</td>
-                        <td>{recipe?.description}</td>
-                        <td>{recipe.tag?.name}</td>
-                        <td>{recipe.category[0]?.name}</td>
-                        <td>
-                        {/* <i
-                          onClick={()=>{showUpdateModal(category)}}
-                          className="fa fa-edit text-warning mx-5"></i> */}
-                          <i
-                            onClick={()=>{showDeleteModal(recipe.id)}}
-                            className="fa fa-trash text-danger"
-                          ></i>
-                        </td>
+          {/* Filtration */}
+            <input 
+              onChange={getNameValue}
+              placeholder='Search By Recipe Name...' className='form-control my-3' type="text"  />
+            {/* End Filtration */}
+            {
+            recipesList.length > 0 
+            ? (
+              <div className="">
+                  <table className="table">
+                    <thead>
+                      <tr className="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">Recipe Name</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Tag</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Actions</th>
                       </tr>
-                      </>
-                    ))
-                  }
-    
-                </tbody>
-              </table>
-              {/* Pagination  */}
-              <nav aria-label="Page navigation example ">
-                <ul className="pagination justify-content-center">
-                <li className="page-item">
-                          <a className="page-link"
-                          aria-label="Previous">
-                            <span aria-hidden="true">«</span>
-                          </a>
-                </li>
-                  {
-                    pagesArray.map((pageNo) =>(
-                      <>
-                        <li onClick={()=>getRecipesList(pageNo)}
-                         key={pageNo} className="page-item">
-                          <a className="page-link">
-                            {pageNo}
-                          </a>
-                        </li>   
-                      </>
-                    ))
-                  }
-                  <li 
-                  className="page-item">
-                          <a className="page-link"
-                          aria-label="Next">
-                            <span aria-hidden="true">» </span>
-                          </a>
-                  </li>
-                  
-                </ul>
-              </nav>
-              {/* Pagination  */}
-          </div>
-          )
-          : (
-              <Nodata />
-          )
-      }
+                    </thead>
+
+                    <tbody>            
+                      {
+                        recipesList.map((recipe, index)=>(
+                          <>
+                          <tr className="text-center" key={recipe.id}>
+                            <th scope="row">{index + 1}</th>
+                            <td scope="row">{recipe?.name}</td>
+                            <td>
+                              <div className="img-container">
+                                <img src={imgUrl + recipe.imagePath} 
+                                alt="recipe-image"
+                                className="w-100 img-fluid" />
+                              </div>
+                              
+                              </td>
+                            <td>{recipe?.price}</td>
+                            <td>{recipe?.description}</td>
+                            <td>{recipe.tag?.name}</td>
+                            <td>{recipe.category[0]?.name}</td>
+                            <td>
+                            {/* <i
+                              onClick={()=>{showUpdateModal(category)}}
+                              className="fa fa-edit text-warning mx-5"></i> */}
+                              <i
+                                onClick={()=>{showDeleteModal(recipe.id)}}
+                                className="fa fa-trash text-danger"
+                              ></i>
+                            </td>
+                          </tr>
+                          </>
+                        ))
+                      }
+        
+                    </tbody>
+                  </table>
+                  {/* Pagination  */}
+                  <nav aria-label="Page navigation example ">
+                    <ul className="pagination justify-content-center">
+                    <li className="page-item">
+                              <a className="page-link pag-clic"
+                              aria-label="Previous">
+                                <span aria-hidden="true">«</span>
+                              </a>
+                    </li>
+                      {
+                        pagesArray.map((pageNo) =>(
+                          <>
+                            <li onClick={()=>getRecipesList(pageNo, searchString)}
+                            key={pageNo} className="page-item ">
+                              <a className="page-link pag-clic">
+                                {pageNo}
+                              </a>
+                            </li>   
+                          </>
+                        ))
+                      }
+                      <li 
+                      className="page-item">
+                              <a className="page-link pag-clic"
+                              aria-label="Next">
+                                <span aria-hidden="true">» </span>
+                              </a>
+                      </li>
+                    </ul>
+                  </nav>
+                  {/* Pagination  */}
+              </div>
+              )
+              : (
+                  <Nodata />
+              )
+            }
         </div>
       </div>
   </>

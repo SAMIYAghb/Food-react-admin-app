@@ -331,7 +331,7 @@ const CategoriesList = ({ title, paragraph }) => {
               <nav aria-label="Page navigation example ">
                 <ul className="pagination justify-content-center">
                 <li className="page-item">
-                          <a className="page-link"
+                          <a className="page-link pag-clic"
                           aria-label="Previous">
                             <span aria-hidden="true">«</span>
                           </a>
@@ -341,7 +341,7 @@ const CategoriesList = ({ title, paragraph }) => {
                       <>
                         <li onClick={()=>getCategoriesList(pageNo, searchString)}
                          key={pageNo} className="page-item">
-                          <a className="page-link">
+                          <a className="page-link pag-clic">
                             {pageNo}
                           </a>
                         </li>   
@@ -350,7 +350,7 @@ const CategoriesList = ({ title, paragraph }) => {
                   }
                   <li 
                   className="page-item">
-                          <a className="page-link"
+                          <a className="page-link pag-clic"
                           aria-label="Next">
                             <span aria-hidden="true">» </span>
                           </a>
