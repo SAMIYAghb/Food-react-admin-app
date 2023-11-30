@@ -20,6 +20,8 @@ const RecipesList = ({title, paragraph}) => {
   const [modalState, setModalState] = useState("close");
 
   const showAddModal = () => {
+    getTagsList();
+    getCategoriesList();
     setValue('name', null);
     setValue('price', null);
     setValue('description', null);
@@ -149,9 +151,7 @@ const RecipesList = ({title, paragraph}) => {
 
   useEffect(() =>{
     getRecipesList();
-
-    getCategoriesList();
-    getTagsList();//a confirmer si c la quand doit appeler les tags?
+    
   },[]);
 
   return (
@@ -350,9 +350,9 @@ const RecipesList = ({title, paragraph}) => {
                       <td>{recipe.tag?.name}</td>
                       <td>{recipe.category[0]?.name}</td>
                       <td>
-                      <i
-                        // onClick={()=>{showUpdateModal(category)}}
-                         className="fa fa-edit text-warning mx-5"></i>
+                      {/* <i
+                        onClick={()=>{showUpdateModal(category)}}
+                         className="fa fa-edit text-warning mx-5"></i> */}
                         <i
                           onClick={()=>{showDeleteModal(recipe.id)}}
                           className="fa fa-trash text-danger"

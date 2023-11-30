@@ -1,7 +1,7 @@
 import avatar from '../../../assets/images/admin.png'
 
 const Navbar = ({adminData}) => {
-  console.log(adminData , "from navbar");
+  // console.log(adminData , "from navbar");
   return (
   <>
    <nav className="navbar navbar-expand-lg navbar-bg px-5 mt-5">

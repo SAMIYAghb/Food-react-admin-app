@@ -97,13 +97,13 @@ const Login = ({saveAdminData}) => {
                     <input 
                     {...register("password",
                      { required: true,
-                      // maxLength: 20,
-                      // minLength:4,
+                      pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
                      })}
                      type="password"
                      name="password"                 
                      className="form-control"  placeholder="Password"/>
                     {errors.password && errors.password.type === "required" && (<span className='text-danger'>Password is required</span>)}
+                    {errors.password && errors.password.type === "pattern" && (<span className='text-danger '>password is invalid</span>)}
                 </div>
                 <div className="form-group my-3 d-flex justify-content-between">
                     <span>Register Now?</span>

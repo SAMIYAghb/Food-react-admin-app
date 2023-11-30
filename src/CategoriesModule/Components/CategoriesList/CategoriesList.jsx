@@ -43,6 +43,7 @@ const CategoriesList = ({ title, paragraph }) => {
   // const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
   // modal
+
   const onSubmit = async (data) => {
     // console.log(data);
     await axios
@@ -82,16 +83,6 @@ const CategoriesList = ({ title, paragraph }) => {
       .then((response) => {
         // console.log(response.data.data);
         setCategoriesList(response.data.data);
-        // toast.success("Category deleted successfully", {
-        //     position: "top-right",
-        //     autoClose: 3000,
-        //     hideProgressBar: false,
-        //     closeOnClick: true,
-        //     pauseOnHover: true,
-        //     draggable: true,
-        //     progress: "undefined",
-        //     theme: "colored",
-        //   });
       })
       .catch((error) => {
         console.log(error);

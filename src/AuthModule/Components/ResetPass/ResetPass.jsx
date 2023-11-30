@@ -19,7 +19,6 @@ const ResetPass = () => {
         .post(baseUrl + "Users/Reset", data)        
         .then((response) => {
           console.log(response);
-          setTimeout(()=>{
             toast.success("Password change successfully",{
               position: "top-right",
               autoClose: 3000,
@@ -29,8 +28,7 @@ const ResetPass = () => {
               draggable: true,
               progress: "undefined",
               theme: "colored"
-            });
-          }, 1);
+            });         
           navigate('/login');
          })
         .catch((error)=>{
@@ -90,21 +88,25 @@ const ResetPass = () => {
                         <input 
                         {...register("password",
                         { required: true,
+                          pattern:/^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/
                         })}
                         type="password"
                         name="password"                 
                         className="form-control"  placeholder="Password"/>
                         {errors.password && errors.password.type === "required" && (<span className='text-danger'>Password is required</span>)}
+                        {errors.password && errors.password.type === "pattern" && (<span className='text-danger '>password is invalid</span>)}
                     </div>
 
                     <div className="form-group my-3">
                         <input 
                         {...register("confirmPassword",
-                        { required: true,
+                        { required: true,                         
+                      
                         })}
                         type="password"                                     
                         className="form-control"  placeholder="Confirm Password"/>
                         {errors.confirmPassword && errors.confirmPassword.type === "required" && (<span className='text-danger'>confirm Password is required</span>)}
+                      
                     </div>
                 
                 <div className="form-group my-3">
