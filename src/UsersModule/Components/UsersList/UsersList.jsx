@@ -17,6 +17,7 @@ const UsersList = ({title, paragraph}) => {
     formState: { errors },
   } = useForm();
   const[usersList, setUsersList] = useState([]);
+  const[itemId, setItemId] = useState(0);
 
   // modal
   const [modalState, setModalState] = useState("close");
@@ -24,8 +25,18 @@ const UsersList = ({title, paragraph}) => {
     // getusersList();
     setModalState("add-modal");
   };
+  const showDeleteModal = (id) => {
+    // console.log(id, "deleted");
+    setItemId(id); //pour l'envoyé a l API
+    setModalState("delete-modal");
+  };
   const handleClose = () => setModalState("close");
    // modal
+
+   //to adda a new user to the backeend /API
+   const onSubmit =async (data) => {
+    console.log(data);
+   }
 
    const getUsersList = async() =>{
     await axios
@@ -44,14 +55,71 @@ const UsersList = ({title, paragraph}) => {
     });
    }
 
+   const deleteUser = async(itemId)=>{
+    // console.log(id, 'deleted');
+    await axios
+    .delete(baseUrl + `Users/${itemId}`, {
+      headers: {
+        //pour obtenir les users on doit étre login 'authorized'
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    })
+    .then((response) => {
+      // console.log(response.data.data);
+      toast.success("User Deleted successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: "undefined",
+        theme: "colored",
+      });
+      getUsersList();
+      handleClose();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+   }
+
    useEffect(() => {
     getUsersList();
    },[]);
 
 
   return (<>
+  <ToastContainer/>
   <Header title={'Users List'} paragraph={'You can now add your items that any user can order it from the Application and you can edit'} />
     
+    {/* modal delete User*/}
+      <Modal
+        show={modalState === "delete-modal"}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Body>
+          <Modal.Header closeButton></Modal.Header>
+          <div className="text-center">
+            <img src={nodata} alt="dalate-img" className="w-50" />
+            <h3>Delete This User?</h3>
+            <p className="text-muted">
+              are you sure you want to delete this item ? if you are sure just
+              click on delete it
+            </p>
+            <div className="text-end">
+              <button 
+                onClick={()=>{deleteUser(itemId)}}
+                className="btn btn-outline-danger w-50 ">
+                Delete this item
+              </button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/*end modal delete User*/}
     {/* modal Add New User*/}
       <Modal
         show={modalState === "add-modal"}
@@ -63,8 +131,22 @@ const UsersList = ({title, paragraph}) => {
           <Modal.Header closeButton></Modal.Header>
           <h3>Add new User</h3>
           <p className="text-muted">Welcome Back! Please enter your details</p>
-          {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-          
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-group my-3">
+              <input
+                {...register("userName", { required: true })}
+                type="text"
+                placeholder="User Name"
+                className="form-control"
+              />
+              {errors.name && errors.name.type === "required" && (
+                <span className="text-danger ">Category name is required</span>
+              )}
+            </div>
+            <div className="form-group my-3">
+              <button className="btn btn-success w-100">Add new category</button>
+            </div>
+          </form>
         </Modal.Body>
       </Modal>
     {/*end modal  Add New User*/}
@@ -123,7 +205,7 @@ const UsersList = ({title, paragraph}) => {
                       <td>{user?.phoneNumber}</td>
                       <td>
                         <i
-                          // onClick={()=>{showDeleteModal(recipe.id)}}
+                          onClick={()=>{showDeleteModal(user.id)}}
                           className="fa fa-trash text-danger"
                         ></i>
                       </td>

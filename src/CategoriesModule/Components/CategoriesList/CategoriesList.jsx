@@ -100,9 +100,18 @@ const CategoriesList = ({ title, paragraph }) => {
     })
     .then((response)=>{
         console.log(response);
+        toast.success("Category deleted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored",
+        });
         handleClose();
         getCategoriesList();
-
     })
     .catch((error) => {
       console.log(error);
@@ -120,6 +129,16 @@ const CategoriesList = ({ title, paragraph }) => {
     })
     .then((response)=>{
         console.log(response);
+        toast.success("Category Updated successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: "undefined",
+          theme: "colored",
+        });
         handleClose();
         getCategoriesList();
     })
