@@ -296,6 +296,8 @@ const CategoriesList = ({ title, paragraph }) => {
           )}
         </div>
       </div>
+      {/* Pagination */}
+      
     </>
   );
 };

@@ -10,21 +10,13 @@ import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 
 const UsersList = ({title, paragraph}) => {
   const imgUrl = 'https://upskilling-egypt.com/';
-  const {
-    register,
-    handleSubmit,
-    setValue,  //Vider la valeur expl: j'ai ajouté une category et je veux vider le champs juste après
-    formState: { errors },
-  } = useForm();
+ 
   const[usersList, setUsersList] = useState([]);
   const[itemId, setItemId] = useState(0);
 
   // modal
   const [modalState, setModalState] = useState("close");
-  const showAddModal = () => {
-    // getusersList();
-    setModalState("add-modal");
-  };
+ 
   const showDeleteModal = (id) => {
     // console.log(id, "deleted");
     setItemId(id); //pour l'envoyé a l API
@@ -33,10 +25,6 @@ const UsersList = ({title, paragraph}) => {
   const handleClose = () => setModalState("close");
    // modal
 
-   //to adda a new user to the backeend /API
-   const onSubmit =async (data) => {
-    console.log(data);
-   }
 
    const getUsersList = async() =>{
     await axios
@@ -120,46 +108,11 @@ const UsersList = ({title, paragraph}) => {
         </Modal.Body>
       </Modal>
       {/*end modal delete User*/}
-    {/* modal Add New User*/}
-      <Modal
-        show={modalState === "add-modal"}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Body>
-          <Modal.Header closeButton></Modal.Header>
-          <h3>Add new User</h3>
-          <p className="text-muted">Welcome Back! Please enter your details</p>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="form-group my-3">
-              <input
-                {...register("userName", { required: true })}
-                type="text"
-                placeholder="User Name"
-                className="form-control"
-              />
-              {errors.name && errors.name.type === "required" && (
-                <span className="text-danger ">Category name is required</span>
-              )}
-            </div>
-            <div className="form-group my-3">
-              <button className="btn btn-success w-100">Add new category</button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
-    {/*end modal  Add New User*/}
+    
     <div className="row align-items-center justify-content-between rounded-3 p-4">
         <div className="col-md-6">
           <h3>Users Table Details</h3>
           <p>You can check all details</p>
-        </div>
-        <div className="col-md-6 text-end">
-          <button onClick={showAddModal} className="btn btn-success px-5 ">
-            Add New User
-            <i className=" px-2 fa fa-arrow-right" aria-hidden="true"></i>
-          </button>
         </div>
 
         <div className="">
