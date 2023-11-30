@@ -12,30 +12,32 @@ const CategoriesList = ({ title, paragraph }) => {
   const {
     register,
     handleSubmit,
-    setValue,  //Vider la valeur expl: j'ai ajouté une category et je veux vider le champs juste après
+    setValue, //Vider la valeur expl: j'ai ajouté une category et je veux vider le champs juste après
     formState: { errors },
   } = useForm();
+  //state for pagination
+  const [pagesArray, setPagesArray] = useState([]);
 
   const [categoriesList, setCategoriesList] = useState([]);
-  const[itemId, setItemId] = useState(0);
+  const [itemId, setItemId] = useState(0);
   // modal
   const [modalState, setModalState] = useState("close");
 
   const showAddModal = () => {
-    setValue('name', null);
+    setValue("name", null);
     setModalState("modal-one");
   };
 
   const showDeleteModal = (id) => {
     // console.log(id, "deleted");
-    setItemId(id)
+    setItemId(id);
     setModalState("modal-two");
   };
 
   const showUpdateModal = (categoryItem) => {
     // console.log(id, "updated");
     setItemId(categoryItem.id);
-    setValue('name', categoryItem.name);
+    setValue("name", categoryItem.name);
     setModalState("modal-three");
   };
   const handleClose = () => setModalState("close");
@@ -53,7 +55,7 @@ const CategoriesList = ({ title, paragraph }) => {
         },
       })
       .then((response) => {
-        console.log(response);       
+        console.log(response);
         getCategoriesList(); // update the list: mise a jour de la liste des categories; permet à la nouvelle category d'apparaitre dans la list
         toast.success("Category added successfully", {
           position: "top-right",
@@ -72,16 +74,28 @@ const CategoriesList = ({ title, paragraph }) => {
       });
   };
 
-  const getCategoriesList = async () => {
+  const getCategoriesList = async (pageNo) => {
+    //pageNo=1 => c a me donne les 5 premiere category, pageNo=2 => c a me donne les 10 category etc....
     await axios
-      .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
+      // .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
+      .get(baseUrl + "Category", {
         headers: {
           //pour obtenir les caterories on doit étre login 'authorized'
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
+        params: {
+          pageSize: 5, //c'est moi qui a choisi de mettre 5 category dans chaque page donc c une valeur changeable
+          pageNumber: pageNo, //c une valeur fixe qui cien du backend
+        },
       })
       .then((response) => {
         // console.log(response.data.data);
+        // console.log(response.data.totalNumberOfPages);
+        let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
+        .fill()
+        .map((_,i )=> i+1); //fait moi un tableau qi contient le nombre d'element qui = au totalNumberOfPages(fill=remplie) exemple : Array(5).fill().map((_,i )=> i+1); si j'ai totalNumberOfPages = 5, avec ce bout de code j'obtien [1,2,3,4,5]
+        setPagesArray(arrayOfNumberOfPages);
+        // console.log(pagesArray);
         setCategoriesList(response.data.data);
       })
       .catch((error) => {
@@ -89,16 +103,15 @@ const CategoriesList = ({ title, paragraph }) => {
       });
   };
 
-  const deleteCategory = async(itemId) => {
+  const deleteCategory = async (itemId) => {
     // console.log(itemId);
     await axios
-    .delete(baseUrl + `category/${itemId}`, 
-    {
-      headers:{
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-      }
-    })
-    .then((response)=>{
+      .delete(baseUrl + `category/${itemId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
         console.log(response);
         toast.success("Category deleted successfully", {
           position: "top-right",
@@ -112,22 +125,21 @@ const CategoriesList = ({ title, paragraph }) => {
         });
         handleClose();
         getCategoriesList();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-  const updateCategory = async(data) => {
+  const updateCategory = async (data) => {
     // console.log(itemId);
     await axios
-    .put(baseUrl + `category/${itemId}`, data,
-    {
-      headers:{
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-      }
-    })
-    .then((response)=>{
+      .put(baseUrl + `category/${itemId}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
         console.log(response);
         toast.success("Category Updated successfully", {
           position: "top-right",
@@ -141,20 +153,20 @@ const CategoriesList = ({ title, paragraph }) => {
         });
         handleClose();
         getCategoriesList();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   // getCategoriesList()
   useEffect(() => {
-    getCategoriesList();
+    getCategoriesList(1); //pageNo= 1 pour obtenir les 5 categories
   }, []);
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       <Header
         title={"Categories Item"}
         paragraph={
@@ -185,7 +197,9 @@ const CategoriesList = ({ title, paragraph }) => {
               )}
             </div>
             <div className="form-group my-3">
-              <button className="btn btn-success w-100">Add new category</button>
+              <button className="btn btn-success w-100">
+                Add new category
+              </button>
             </div>
           </form>
         </Modal.Body>
@@ -208,13 +222,15 @@ const CategoriesList = ({ title, paragraph }) => {
               click on delete it
             </p>
             <div className="text-end">
-              <button 
-                onClick={()=>{deleteCategory(itemId)}}
-                className="btn btn-outline-danger w-50 ">
+              <button
+                onClick={() => {
+                  deleteCategory(itemId);
+                }}
+                className="btn btn-outline-danger w-50 "
+              >
                 Delete this item
               </button>
             </div>
-            
           </div>
         </Modal.Body>
       </Modal>
@@ -263,41 +279,78 @@ const CategoriesList = ({ title, paragraph }) => {
 
         <div className="">
           {categoriesList.length > 0 ? (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Category Name</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categoriesList.map((category) => (
-                  <>
-                    <tr key={category.id}>
-                      <th scope="row">{category.id}</th>
-                      <td>{category.name}</td>
-                      <td className=" ">
-                        <i
-                        onClick={()=>{showUpdateModal(category)}}
-                         className="fa fa-edit text-warning mx-5"></i>
-                        <i
-                          onClick={()=>{showDeleteModal(category.id)}}
-                          className="fa fa-trash text-danger"
-                        ></i>
-                      </td>
-                    </tr>
-                  </>
-                ))}
-              </tbody>
-            </table>
+            <div className="">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categoriesList.map((category) => (
+                    <>
+                      <tr key={category.id}>
+                        <th scope="row">{category.id}</th>
+                        <td>{category.name}</td>
+                        <td className=" ">
+                          <i
+                            onClick={() => {
+                              showUpdateModal(category);
+                            }}
+                            className="fa fa-edit text-warning mx-5"
+                          ></i>
+                          <i
+                            onClick={() => {
+                              showDeleteModal(category.id);
+                            }}
+                            className="fa fa-trash text-danger"
+                          ></i>
+                        </td>
+                      </tr>
+                    </>
+                  ))}
+                </tbody>
+              </table>
+               {/* Pagination  */}
+              <nav aria-label="Page navigation example ">
+                <ul className="pagination justify-content-center">
+                <li className="page-item">
+                          <a className="page-link"
+                          aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                          </a>
+                </li>
+                  {
+                    pagesArray.map((page, index) =>(
+                      <>
+                        <li onClick={()=>getCategoriesList(page)}
+                         key={index}className="page-item">
+                          <a className="page-link">
+                            {page}
+                          </a>
+                        </li>   
+                      </>
+                    ))
+                  }
+                  <li 
+                  className="page-item">
+                          <a className="page-link"
+                          aria-label="Next">
+                            <span aria-hidden="true">» </span>
+                          </a>
+                  </li>
+                  
+                </ul>
+              </nav>
+            </div>
           ) : (
+            // end Pagination 
             <Nodata />
           )}
         </div>
       </div>
-      {/* Pagination */}
-      
     </>
   );
 };
