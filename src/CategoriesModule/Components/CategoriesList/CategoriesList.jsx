@@ -20,6 +20,7 @@ const CategoriesList = ({ title, paragraph }) => {
 
   const [categoriesList, setCategoriesList] = useState([]);
   const [itemId, setItemId] = useState(0);
+  const [searchString, setSearchString] = useState("");//apres avoir obtenu les resultat de filtration sur la page 1 c ok , mais quand je clique sur la deuxieme page le filtre se diparaitre, pour regler ca je vais mettre dans la fonction getNameValue setSearchString(input.target.value) 
   // modal
   const [modalState, setModalState] = useState("close");
 
@@ -74,7 +75,7 @@ const CategoriesList = ({ title, paragraph }) => {
       });
   };
 
-  const getCategoriesList = async (pageNo) => {
+  const getCategoriesList = async (pageNo,name) => {
     //pageNo=1 => c a me donne les 5 premiere category, pageNo=2 => c a me donne les 10 category etc....
     await axios
       // .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
@@ -86,6 +87,7 @@ const CategoriesList = ({ title, paragraph }) => {
         params: {
           pageSize: 5, //c'est moi qui a choisi de mettre 5 category dans chaque page donc c une valeur changeable
           pageNumber: pageNo, //c une valeur fixe qui cien du backend
+          name : name,
         },
       })
       .then((response) => {
@@ -158,6 +160,13 @@ const CategoriesList = ({ title, paragraph }) => {
         console.log(error);
       });
   };
+
+  // reel time search filtration
+  const getNameValue = (input) =>{
+    // console.log(input.target.value);
+    setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
+    getCategoriesList(1, input.target.value);
+  }
 
   // getCategoriesList()
   useEffect(() => {
@@ -278,6 +287,11 @@ const CategoriesList = ({ title, paragraph }) => {
         </div>
 
         <div className="">
+          {/* Filtration */}
+        <input 
+          onChange={getNameValue}
+          placeholder='Search By Category Name...' className='form-control my-3' type="text"  />
+         {/* End Filtration */}
           {categoriesList.length > 0 ? (
             <div className="">
               <table className="table">
@@ -289,10 +303,10 @@ const CategoriesList = ({ title, paragraph }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {categoriesList.map((category) => (
+                  {categoriesList.map((category, index) => (
                     <>
                       <tr key={category.id}>
-                        <th scope="row">{category.id}</th>
+                        <th scope="row">{index + 1}</th>
                         <td>{category.name}</td>
                         <td className=" ">
                           <i
@@ -323,12 +337,12 @@ const CategoriesList = ({ title, paragraph }) => {
                           </a>
                 </li>
                   {
-                    pagesArray.map((page, index) =>(
+                    pagesArray.map((pageNo) =>(
                       <>
-                        <li onClick={()=>getCategoriesList(page)}
-                         key={index}className="page-item">
+                        <li onClick={()=>getCategoriesList(pageNo, searchString)}
+                         key={pageNo} className="page-item">
                           <a className="page-link">
-                            {page}
+                            {pageNo}
                           </a>
                         </li>   
                       </>
