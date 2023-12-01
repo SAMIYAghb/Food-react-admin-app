@@ -74,7 +74,8 @@ const CategoriesList = ({ title, paragraph }) => {
         console.log(error);
       });
   };
-
+const [currentPage, setCurrentPage] = useState(1);//************* */
+let totalPages;
   const getCategoriesList = async (pageNo,name) => {
     //pageNo=1 => c a me donne les 5 premiere category, pageNo=2 => c a me donne les 10 category etc....
     await axios
@@ -92,13 +93,16 @@ const CategoriesList = ({ title, paragraph }) => {
       })
       .then((response) => {
         // console.log(response.data.data);
-        // console.log(response.data.totalNumberOfPages);
+        console.log(response.data.totalNumberOfPages);
+        let totalPages = response.data.totalNumberOfPages;
+
         let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
         .fill()
         .map((_,i )=> i+1); //fait moi un tableau qi contient le nombre d'element qui = au totalNumberOfPages(fill=remplie) exemple : Array(5).fill().map((_,i )=> i+1); si j'ai totalNumberOfPages = 5, avec ce bout de code j'obtien [1,2,3,4,5]
         setPagesArray(arrayOfNumberOfPages);
         // console.log(pagesArray);
         setCategoriesList(response.data.data);
+        setCurrentPage(pageNo);//************** */
       })
       .catch((error) => {
         console.log(error);
@@ -299,7 +303,7 @@ const CategoriesList = ({ title, paragraph }) => {
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Category Name</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col" >Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -331,7 +335,10 @@ const CategoriesList = ({ title, paragraph }) => {
               <nav aria-label="Page navigation example ">
                 <ul className="pagination justify-content-center">
                 <li className="page-item">
-                          <a className="page-link pag-clic"
+                          <a 
+                          onClick={() => getCategoriesList(currentPage - 1, searchString)}
+                          disabled={currentPage === 1}
+                          className="page-link pag-clic"
                           aria-label="Previous">
                             <span aria-hidden="true">«</span>
                           </a>
@@ -340,7 +347,9 @@ const CategoriesList = ({ title, paragraph }) => {
                     pagesArray.map((pageNo) =>(
                       <>
                         <li onClick={()=>getCategoriesList(pageNo, searchString)}
-                         key={pageNo} className="page-item">
+                         key={pageNo} 
+                        //  className="page-item">
+                         className={`page-item ${pageNo === currentPage ? 'active' : ''}`}>
                           <a className="page-link pag-clic">
                             {pageNo}
                           </a>
@@ -349,6 +358,8 @@ const CategoriesList = ({ title, paragraph }) => {
                     ))
                   }
                   <li 
+                  onClick={() => getCategoriesList(currentPage + 1, searchString)}
+                  disabled={currentPage === totalPages}
                   className="page-item">
                           <a className="page-link pag-clic"
                           aria-label="Next">
