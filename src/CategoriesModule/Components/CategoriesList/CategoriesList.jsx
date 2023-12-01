@@ -17,7 +17,7 @@ const CategoriesList = ({ title, paragraph }) => {
   } = useForm();
   //state for pagination
   const [pagesArray, setPagesArray] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(1);//************* */
   const [categoriesList, setCategoriesList] = useState([]);
   const [itemId, setItemId] = useState(0);
   const [searchString, setSearchString] = useState("");//apres avoir obtenu les resultat de filtration sur la page 1 c ok , mais quand je clique sur la deuxieme page le filtre se diparaitre, pour regler ca je vais mettre dans la fonction getNameValue setSearchString(input.target.value) 
@@ -74,8 +74,8 @@ const CategoriesList = ({ title, paragraph }) => {
         console.log(error);
       });
   };
-const [currentPage, setCurrentPage] = useState(1);//************* */
-let totalPages;
+
+let totalPages;//***********
   const getCategoriesList = async (pageNo,name) => {
     //pageNo=1 => c a me donne les 5 premiere category, pageNo=2 => c a me donne les 10 category etc....
     await axios
@@ -93,8 +93,8 @@ let totalPages;
       })
       .then((response) => {
         // console.log(response.data.data);
-        console.log(response.data.totalNumberOfPages);
-        let totalPages = response.data.totalNumberOfPages;
+        // console.log(response.data.totalNumberOfPages);
+        let totalPages = response.data.totalNumberOfPages;//************ */
 
         let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
         .fill()
@@ -358,9 +358,9 @@ let totalPages;
                     ))
                   }
                   <li 
-                  onClick={() => getCategoriesList(currentPage + 1, searchString)}
-                  disabled={currentPage === totalPages}
-                  className="page-item">
+                    onClick={() => getCategoriesList(currentPage + 1, searchString)}
+                    disabled={currentPage === totalPages}
+                    className="page-item">
                           <a className="page-link pag-clic"
                           aria-label="Next">
                             <span aria-hidden="true">» </span>

@@ -16,7 +16,7 @@ const UsersList = ({title, paragraph}) => {
   //state for pagination
   const [pagesArray, setPagesArray] = useState([]);
   const [searchString, setSearchString] = useState("");
-
+  const [currentPage, setCurrentPage] = useState(1);//************* */
   // modal
   const [modalState, setModalState] = useState("close");
  
@@ -28,7 +28,7 @@ const UsersList = ({title, paragraph}) => {
   const handleClose = () => setModalState("close");
    // modal
 
-
+   let totalPages;
    const getUsersList = async(pageNo, userName, email) =>{
     await axios
     .get(baseUrl + "Users", {
@@ -46,11 +46,13 @@ const UsersList = ({title, paragraph}) => {
     .then((response) => {
       // console.log(response.data.data);
       // console.log(response.data.totalNumberOfPages);
+      let totalPages = response.data.totalNumberOfPages;//************ */
       let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
       .fill()
       .map((_,i )=> i+1);
       setPagesArray(arrayOfNumberOfPages);
       setUsersList(response?.data?.data);
+      setCurrentPage(pageNo);//************** */
     })
     .catch((error) => {
       console.log(error);
@@ -218,7 +220,10 @@ const UsersList = ({title, paragraph}) => {
             <nav aria-label="Page navigation example ">
             <ul className="pagination justify-content-center">
             <li className="page-item">
-                      <a className="page-link pag-clic"
+                      <a 
+                      onClick={() => getUsersList(currentPage - 1, searchString)}
+                      disabled={currentPage === 1}
+                      className="page-link pag-clic"
                       aria-label="Previous">
                         <span aria-hidden="true">«</span>
                       </a>
@@ -227,7 +232,10 @@ const UsersList = ({title, paragraph}) => {
                 pagesArray.map((pageNo) =>(
                   <>
                     <li onClick={()=>getUsersList(pageNo, searchString)}
-                    key={pageNo} className="page-item ">
+                    key={pageNo} 
+                    // className="page-item "
+                    className={`page-item ${pageNo === currentPage ? 'active' : ''}`}
+                    >
                       <a className="page-link pag-clic">
                         {pageNo}
                       </a>
@@ -236,6 +244,8 @@ const UsersList = ({title, paragraph}) => {
                 ))
               }
               <li 
+              onClick={() => getUsersList(currentPage + 1, searchString)}
+              disabled={currentPage === totalPages}
                 className="page-item">
                       <a className="page-link pag-clic"
                       aria-label="Next">
