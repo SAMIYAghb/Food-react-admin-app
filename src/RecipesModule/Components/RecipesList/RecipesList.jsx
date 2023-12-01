@@ -15,6 +15,7 @@ const RecipesList = ({title, paragraph}) => {
   const[itemId, setItemId] = useState(0);
   //state for pagination
   const [pagesArray, setPagesArray] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);//************* */
 
   const [searchString, setSearchString] = useState("");
   const [selectedTagId, setSelectedTagId] = useState(0);
@@ -140,6 +141,7 @@ const RecipesList = ({title, paragraph}) => {
       });
   };
 
+  let totalPages;
   const getRecipesList = async(pageNo, name, tagId, categoryId) =>{
     await axios
     .get(baseUrl + 'Recipe',{
@@ -157,12 +159,14 @@ const RecipesList = ({title, paragraph}) => {
     )
     .then((response)=>{
       // console.log(response.data.data , 'recipesList');
+      let totalPages = response.data.totalNumberOfPages;//************ */
       let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
         .fill()
         .map((_,i )=> i+1);
         setPagesArray(arrayOfNumberOfPages);
         // console.log(pagesArray);
         setRecipesList(response?.data?.data);
+        setCurrentPage(pageNo);//************** */
     })
     .catch((error) =>{
       console.log(error);
@@ -607,7 +611,10 @@ const RecipesList = ({title, paragraph}) => {
                   <nav aria-label="Page navigation example ">
                     <ul className="pagination justify-content-center">
                     <li className="page-item">
-                              <a className="page-link pag-clic"
+                              <a 
+                              onClick={() => getRecipesList(currentPage - 1, searchString)}
+                              disabled={currentPage === 1}
+                              className="page-link pag-clic"
                               aria-label="Previous">
                                 <span aria-hidden="true">«</span>
                               </a>
@@ -616,7 +623,10 @@ const RecipesList = ({title, paragraph}) => {
                         pagesArray.map((pageNo) =>(
                           <>
                             <li onClick={()=>getRecipesList(pageNo, searchString)}
-                            key={pageNo} className="page-item ">
+                            key={pageNo} 
+                            // className="page-item "
+                            className={`page-item ${pageNo === currentPage ? 'active' : ''}`}
+                            >
                               <a className="page-link pag-clic">
                                 {pageNo}
                               </a>
@@ -625,6 +635,8 @@ const RecipesList = ({title, paragraph}) => {
                         ))
                       }
                       <li 
+                      onClick={() => getRecipesList(currentPage + 1, searchString)}
+                      disabled={currentPage === totalPages}
                       className="page-item">
                               <a className="page-link pag-clic"
                               aria-label="Next">

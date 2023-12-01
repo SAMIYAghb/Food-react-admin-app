@@ -245,7 +245,7 @@ const UsersList = ({title, paragraph}) => {
               }
               <li 
               onClick={() => getUsersList(currentPage + 1, searchString)}
-              disabled={currentPage === totalPages}
+              disabled={currentPage === totalPages}  
                 className="page-item">
                       <a className="page-link pag-clic"
                       aria-label="Next">
