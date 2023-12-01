@@ -119,7 +119,7 @@ const RecipesList = ({title, paragraph}) => {
       });
   };
 
-  const getRecipesList = async(pageNo, name) =>{
+  const getRecipesList = async(pageNo, name, tagId, categoryId) =>{
     await axios
     .get(baseUrl + 'Recipe',{
       headers: {
@@ -129,6 +129,8 @@ const RecipesList = ({title, paragraph}) => {
         pageSize: 5,//statique
         pageNumber: pageNo, //dynamique
         name: name,
+        tagId: tagId,
+        categoryId: categoryId,
       }
   },
     )
@@ -170,8 +172,21 @@ const RecipesList = ({title, paragraph}) => {
     setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
     getRecipesList(1, input.target.value);
   }
+
+  const getTagValue = (select) =>{
+    // console.log(select.target.value);
+    getRecipesList(1,null, select.target.value,null);//il me faut 4 argument pour la function getRecipesList
+  }
+
+  const getCategoryValue = (select) =>{
+    // console.log(select.target.value);
+    getRecipesList(1,null,null, select.target.value);
+  }
+ // end reel time search filtration
   useEffect(() =>{
-    getRecipesList(1);   
+    getRecipesList(1); 
+    getTagsList(); 
+    getCategoriesList();  
   },[]);
 
   return (
@@ -188,8 +203,7 @@ const RecipesList = ({title, paragraph}) => {
         keyboard={false}
       >
         <Modal.Body>
-          <Modal.Header closeButton></Modal.Header>
-          <h3>Add new Recipe</h3>
+          <Modal.Header closeButton><h3>Add new Recipe</h3></Modal.Header>         
           <p className="text-muted">Welcome Back! Please enter your details</p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group my-3">
@@ -228,13 +242,13 @@ const RecipesList = ({title, paragraph}) => {
               )}
             </div>
             
-            <label>Select Tag:</label>
             <select 
             {...register("tagId", { required: true , valueAsNumber:true})}
             aria-label="Default select example"
             type="number"
             className="form-select"
             >
+              <option value="" className="text-muted">Select tag</option>
               {
                 tagsList?.map((tag) =>(
                   <>
@@ -248,13 +262,13 @@ const RecipesList = ({title, paragraph}) => {
                 <span className="text-danger ">tagId is required</span>
               )}
 
-              <label className=" mt-3">Select category ID:</label>
             <select 
               {...register("categoriesIds", { required: true, valueAsNumber:true })}
               aria-label="Default select example"
               type="number"
-              className="form-select"
+              className="form-select mt-3"
               >
+                <option value="" className="text-muted">Select category</option>
                 {
                   categoriesList?.map((category)=>(
                     <>
@@ -333,9 +347,47 @@ const RecipesList = ({title, paragraph}) => {
 
         <div className="">
           {/* Filtration */}
-            <input 
-              onChange={getNameValue}
-              placeholder='Search By Recipe Name...' className='form-control my-3' type="text"  />
+          <div className="row">
+            <div className="col-md-4 my-3">
+              <input 
+                onChange={getNameValue}
+                placeholder='Search By Recipe Name...' className='form-control my-2' type="text"  />
+            </div>
+            <div className="col-md-4 my-3">
+              
+              <select  
+              onChange={getCategoryValue}  
+                className="form-select my-2"
+                >
+                  <option value="" className="text-muted">Select category</option>
+                  {
+                    categoriesList?.map((category)=>(
+                      <>
+                        <option key={category.id} value={category.id}>{category.name}</option>
+                      </>
+                    ))
+                  }
+              </select>
+            </div>
+            <div className="col-md-4  my-3">
+              
+              <select  
+              onChange={getTagValue}             
+              className="form-select my-2"
+              >
+                <option value="" className="text-muted">Select tag</option>
+                {
+                  tagsList?.map((tag) =>(
+                    <>
+                    <option key={tag.id} value={tag.id}>{tag.name}</option>
+                    </>
+                  ))
+                }
+
+              </select>
+            </div>
+          </div>
+                          
             {/* End Filtration */}
             {
             recipesList.length > 0 
