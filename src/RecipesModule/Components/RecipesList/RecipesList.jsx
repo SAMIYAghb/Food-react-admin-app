@@ -7,7 +7,6 @@ import { baseUrl } from "../../../Constants/ApiUrl";
 import { toast, ToastContainer } from 'react-toastify';
 import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
-import { Loader } from 'react-loader-spinner';
 
 
 const RecipesList = ({title, paragraph}) => {
@@ -506,7 +505,6 @@ const RecipesList = ({title, paragraph}) => {
           </button>
         </div>
 
-
         <div className="">
           {/* Filtration */}
             <div className="row">
@@ -643,7 +641,7 @@ const RecipesList = ({title, paragraph}) => {
               )
             }
         </div>
-
+        
       </div>
   </>
     
