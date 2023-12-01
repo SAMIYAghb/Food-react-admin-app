@@ -134,7 +134,7 @@ const CategoriesList = ({ title, paragraph }) => {
   };
 
   const updateCategory = async (data) => {
-    // console.log(itemId);
+    // console.log(data);
     await axios
       .put(baseUrl + `category/${itemId}`, data, {
         headers: {
@@ -294,8 +294,8 @@ const CategoriesList = ({ title, paragraph }) => {
          {/* End Filtration */}
           {categoriesList.length > 0 ? (
             <div className="">
-              <table className="table">
-                <thead>
+              <table className="table my-4 table-striped">
+                <thead className="table-success">
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Category Name</th>

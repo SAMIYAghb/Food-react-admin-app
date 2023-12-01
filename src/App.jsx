@@ -16,6 +16,8 @@ import RequestResetPass from './AuthModule/Components/RequestResetPass/RequestRe
 import ResetPass from './AuthModule/Components/ResetPass/ResetPass';
 
 
+
+
 function App() {
   const [adminData, setAdminData] = useState(null);
 // console.log(adminData);
@@ -71,6 +73,7 @@ function App() {
   return(
     <>
       <RouterProvider router={routes}/> 
+      
     </>
   )
 }

@@ -56,7 +56,7 @@ const SideBar = () => {
 
           <MenuItem icon={<i className='fa fa-home' aria-hidden='true'></i>} component={<Link to="/dashboard" />}> 
           Home</MenuItem>
-          <MenuItem icon={<i className='fa fa-user' aria-hidden='true'></i>} component={<Link to="/dashboard/users" />}> 
+          <MenuItem icon={<i className='fa fa-users' aria-hidden='true'></i>} component={<Link to="/dashboard/users" />}> 
           Users</MenuItem>
           <MenuItem icon={<i className='fa fa-pizza-slice' aria-hidden='true'></i>} component={<Link to="/dashboard/recipes" />}> 
           Recipes</MenuItem>

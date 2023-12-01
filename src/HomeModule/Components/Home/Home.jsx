@@ -1,5 +1,10 @@
+
 import Header from "../../../SharedModule/Components/Header/Header"
 import { Link } from 'react-router-dom';
+import Loader from "../../../SharedModule/Components/Loader/Loader";
+
+
+
 
 const Home = ({title, paragraph}) => {
   return (
@@ -7,7 +12,7 @@ const Home = ({title, paragraph}) => {
     <Header 
     title={'Welcome upskilling!'}
      paragraph={'This is a welcoming screen for the entry of the application , you can now see the options'} />
-{/* home content */}
+    {/* home content */}
       <div className="content row mx-4 align-items-center justify-content-between rounded-3 p-4">
         <div className="col-md-6">
             <h3>Fill the <span className="text-success">Recipes</span> !</h3>
@@ -23,7 +28,9 @@ const Home = ({title, paragraph}) => {
             </button>
         </div>
       </div>
- 
+      
+<Loader/>
+  
       
     </>
   )

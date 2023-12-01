@@ -1,6 +1,6 @@
 import Header from "../../../SharedModule/Components/Header/Header"
 import Modal from "react-bootstrap/Modal";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/ApiUrl";
@@ -13,6 +13,9 @@ const UsersList = ({title, paragraph}) => {
  
   const[usersList, setUsersList] = useState([]);
   const[itemId, setItemId] = useState(0);
+  //state for pagination
+  const [pagesArray, setPagesArray] = useState([]);
+  const [searchString, setSearchString] = useState("");
 
   // modal
   const [modalState, setModalState] = useState("close");
@@ -26,16 +29,27 @@ const UsersList = ({title, paragraph}) => {
    // modal
 
 
-   const getUsersList = async() =>{
+   const getUsersList = async(pageNo, userName, email) =>{
     await axios
-    .get(baseUrl + "Users/?pageSize=10&pageNumber=1", {
+    .get(baseUrl + "Users", {
       headers: {
         //pour obtenir les users on doit étre login 'authorized'
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+      },      
+      params:{
+        pageSize: 5,//statique
+        pageNumber: pageNo, //dynamique
+        userName: userName,
+        email: email,
+      }
     })
     .then((response) => {
       // console.log(response.data.data);
+      // console.log(response.data.totalNumberOfPages);
+      let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
+      .fill()
+      .map((_,i )=> i+1);
+      setPagesArray(arrayOfNumberOfPages);
       setUsersList(response?.data?.data);
     })
     .catch((error) => {
@@ -72,8 +86,23 @@ const UsersList = ({title, paragraph}) => {
     });
    }
 
+   // reel time search filtration Users
+  const getNameValue = (input) =>{
+    // console.log(input.target.value);
+    setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
+    getUsersList(1, input.target.value);//filtrer par nom seulement
+    // getRecipesList(1, input.target.value, selectedTagId, selectedCategoryId);//filtrer par nom et category et tag au meme temps
+  }
+  
+  const getEmailValue = (input) =>{
+    console.log(input.target.value);
+    setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
+    getUsersList(1, input.target.value);//filtrer par email seulement
+  }
+  //end reel time search filtration Users
+
    useEffect(() => {
-    getUsersList();
+    getUsersList(1);
    },[]);
 
 
@@ -81,7 +110,7 @@ const UsersList = ({title, paragraph}) => {
   <ToastContainer/>
   <Header title={'Users List'} paragraph={'You can now add your items that any user can order it from the Application and you can edit'} />
     
-    {/* modal delete User*/}
+      {/* modal delete User*/}
       <Modal
         show={modalState === "delete-modal"}
         onHide={handleClose}
@@ -119,9 +148,25 @@ const UsersList = ({title, paragraph}) => {
       {
         usersList.length > 0 
         ? (
-
-            <table className="table">
-              <thead>
+          <div className="">
+            {/* Filtration */}
+            <div className="row">
+              <div className="col-md-6">
+                <input 
+                  onChange={getNameValue}
+                  placeholder='Search By User Name...' className='form-control my-2' type="text"  />
+              </div>            
+              <div className="col-md-6 ">
+                <input 
+                  onChange={getEmailValue}
+                  placeholder='Search By User Email...' className='form-control my-2' type="text"  />
+              </div> 
+            
+            </div>                         
+          {/* End Filtration */}
+          <div className="table-responsive">
+            <table className="table my-4 table-striped">
+              <thead className="table-success">
                 <tr className="text-center">
                   <th scope="col">#</th>
                   <th scope="col">User Name</th>
@@ -168,7 +213,39 @@ const UsersList = ({title, paragraph}) => {
                 }
               </tbody>
             </table>
-
+          </div>
+            {/* Pagination  */}
+            <nav aria-label="Page navigation example ">
+            <ul className="pagination justify-content-center">
+            <li className="page-item">
+                      <a className="page-link pag-clic"
+                      aria-label="Previous">
+                        <span aria-hidden="true">«</span>
+                      </a>
+            </li>
+              {
+                pagesArray.map((pageNo) =>(
+                  <>
+                    <li onClick={()=>getUsersList(pageNo, searchString)}
+                    key={pageNo} className="page-item ">
+                      <a className="page-link pag-clic">
+                        {pageNo}
+                      </a>
+                    </li>   
+                  </>
+                ))
+              }
+              <li 
+                className="page-item">
+                      <a className="page-link pag-clic"
+                      aria-label="Next">
+                        <span aria-hidden="true">» </span>
+                      </a>
+              </li>
+            </ul>
+          </nav>
+          {/* Pagination  */}
+          </div>
           )
           : (
               <Nodata />
