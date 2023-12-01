@@ -7,7 +7,7 @@ import { baseUrl } from "../../../Constants/ApiUrl";
 import { toast, ToastContainer } from 'react-toastify';
 import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
-
+import defaultrecipeImg from '../../../assets/images/1.webp';
 
 const RecipesList = ({title, paragraph}) => {
   // console.log(categoriesList , 'from recipe list');
@@ -23,7 +23,7 @@ const RecipesList = ({title, paragraph}) => {
   const [recipesList, setRecipesList] = useState([]);
   const [tagsList, setTagsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const {
     register,
     handleSubmit,
@@ -38,6 +38,7 @@ const RecipesList = ({title, paragraph}) => {
   const showAddModal = () => {
     getTagsList();
     getCategoriesList();
+   
     setValue('name', null);
     setValue('price', null);
     setValue('description', null);
@@ -580,9 +581,17 @@ const RecipesList = ({title, paragraph}) => {
                             <td scope="row">{recipe?.name}</td>
                             <td>
                               <div className="img-container">
-                                <img src={imgUrl + recipe.imagePath} 
-                                alt="recipe-image"
-                                className="w-100 img-fluid" />
+                                {recipe.imagePath ?(
+                                    <img src={imgUrl + recipe.imagePath} 
+                                  alt="recipe-image"
+                                  className="w-100 img-fluid" />
+                                ):(
+                                  <img src={defaultrecipeImg} 
+                                  alt="recipe-image"
+                                  className="w-100 img-fluid" />
+                                )
+                                }
+                                
                               </div>
                               
                               </td>
