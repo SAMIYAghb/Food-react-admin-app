@@ -1,7 +1,7 @@
 {
   "name": "food",
   "private": false,
-  "homepage": "https://github.com/SAMIYAghb/Food_React-app",
+  "homepage": "./",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
