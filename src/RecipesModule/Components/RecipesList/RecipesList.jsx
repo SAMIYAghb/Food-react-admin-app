@@ -3,11 +3,12 @@ import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { baseUrl } from "../../../Constants/ApiUrl";
+// import { baseUrl } from "../../../Constants/ApiUrl";
 import { toast, ToastContainer } from 'react-toastify';
 import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 import defaultrecipeImg from '../../../assets/images/1.webp';
+import { baseUrl } from './../../../Constants/ApiUrl';
 
 const RecipesList = ({title, paragraph}) => {
   // console.log(categoriesList , 'from recipe list');

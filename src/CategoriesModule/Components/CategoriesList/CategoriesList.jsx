@@ -1,12 +1,14 @@
 import Header from "./../../../SharedModule/Components/Header/Header";
 import { useEffect, useState } from "react";
-import { baseUrl } from "../../../Constants/ApiUrl";
+// import { baseUrl } from "../../../Constants/ApiUrl";
+
 import axios from "axios";
 import nodata from "../../../assets/images/nodata.png";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import Nodata from "./../../../SharedModule/Components/Nodata/Nodata";
+import { baseUrl } from './../../../Constants/ApiUrl';
 
 const CategoriesList = ({ title, paragraph }) => {
   const {
