@@ -3,23 +3,25 @@ import Modal from "react-bootstrap/Modal";
 // import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { baseUrl } from "../../../Constants/ApiUrl";
 
 import { toast, ToastContainer } from 'react-toastify';
 import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
+import { baseUrl } from './../../../Constants/ApiUrl';
 
 
 const UsersList = ({title, paragraph}) => {
+
   const imgUrl = 'https://upskilling-egypt.com/';
- 
   const[usersList, setUsersList] = useState([]);
   const[itemId, setItemId] = useState(0);
+  const [selectedRoleId, setSelectedRoleId] = useState(0);
   //state for pagination
   const [pagesArray, setPagesArray] = useState([]);
   const [searchString, setSearchString] = useState("");
   const [currentPage, setCurrentPage] = useState(1);//************* */
   // modal
+  const handleClose = () => setModalState("close");
   const [modalState, setModalState] = useState("close");
  
   const showDeleteModal = (id) => {
@@ -27,11 +29,10 @@ const UsersList = ({title, paragraph}) => {
     setItemId(id); //pour l'envoyé a l API
     setModalState("delete-modal");
   };
-  const handleClose = () => setModalState("close");
    // modal
 
    let totalPages;
-   const getUsersList = async(pageNo, userName, email) =>{
+   const getUsersList = async(pageNo, userName, gpId) =>{
     await axios
     .get(baseUrl + "Users", {
       headers: {
@@ -42,7 +43,7 @@ const UsersList = ({title, paragraph}) => {
         pageSize: 5,//statique
         pageNumber: pageNo, //dynamique
         userName: userName,
-        email: email,
+        group: gpId,
       }
     })
     .then((response) => {
@@ -94,14 +95,14 @@ const UsersList = ({title, paragraph}) => {
   const getNameValue = (input) =>{
     // console.log(input.target.value);
     setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
-    getUsersList(1, input.target.value);//filtrer par nom seulement
+    getUsersList(1, searchString, selectedRoleId);//filtrer par nom seulement
     // getRecipesList(1, input.target.value, selectedTagId, selectedCategoryId);//filtrer par nom et category et tag au meme temps
   }
   
-  const getEmailValue = (input) =>{
-    console.log(input.target.value);
-    setSearchString(input.target.value);//pour passer le parametre du filtre aux autre pages
-    getUsersList(1, input.target.value);//filtrer par email seulement
+  const getRoleValue = (select) =>{
+    console.log(select.target.value);
+    setSelectedRoleId(select.target.value); //pour passer le parametre du filtre aux autre pages
+    getUsersList(1, searchString, selectedRoleId);//filtrer par name & role
   }
   //end reel time search filtration Users
 
@@ -161,9 +162,13 @@ const UsersList = ({title, paragraph}) => {
                   placeholder='Search By User Name...' className='form-control my-2' type="text"  />
               </div>            
               <div className="col-md-6 ">
-                <input 
-                  onChange={getEmailValue}
-                  placeholder='Search By User Email...' className='form-control my-2' type="text"  />
+              <select onChange={getRoleValue} className="form-select  my-2">
+                  <option value="" className="text-muted">
+                    search by role
+                  </option>
+                  <option value="1">admin</option>
+                  <option value="2">user</option>
+                </select>
               </div> 
             
             </div>                         
@@ -233,7 +238,7 @@ const UsersList = ({title, paragraph}) => {
               {
                 pagesArray.map((pageNo) =>(
                   <>
-                    <li onClick={()=>getUsersList(pageNo, searchString)}
+                    <li onClick={()=>getUsersList(pageNo, searchString, selectedRoleId)}
                     key={pageNo} 
                     // className="page-item "
                     className={`page-item ${pageNo === currentPage ? 'active' : ''}`}

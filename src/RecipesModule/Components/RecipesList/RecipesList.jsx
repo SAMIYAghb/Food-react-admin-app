@@ -80,7 +80,6 @@ const RecipesList = ({title, paragraph}) => {
   };
   const handleClose = () => setModalState("close");
   // Modal
- 
 
   const onSubmit = async (data) =>{
     console.log(data);
@@ -197,7 +196,7 @@ const RecipesList = ({title, paragraph}) => {
   const updateRecipe = async (data) => {
     console.log(data);
     const updateFormData = appendToFormData(data);
-    
+
     await axios
       .put(baseUrl + `Recipe/${itemId}`, updateFormData , {
         headers: {
