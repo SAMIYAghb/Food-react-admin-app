@@ -1,7 +1,8 @@
 figma
 https://www.figma.com/file/YausZ1ifm4F8tbA1pbDFCm/Task1%2FLanding-Page?type=design&node-id=0-1&mode=design&t=Fv9UzssPcj7bBQZf-0
 
-https://upskilling-egypt.comprendre/docs
+swagger:
+https://upskilling-egypt.com/docs
 
 
 superAdmin identifiant:

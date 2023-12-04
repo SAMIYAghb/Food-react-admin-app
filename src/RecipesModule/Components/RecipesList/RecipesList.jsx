@@ -10,6 +10,7 @@ import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 import defaultrecipeImg from '../../../assets/images/1.webp';
 import { baseUrl } from './../../../Constants/ApiUrl';
 
+
 const RecipesList = ({title, paragraph}) => {
   // console.log(categoriesList , 'from recipe list');
   const imgUrl = 'https://upskilling-egypt.com/'
@@ -25,12 +26,25 @@ const RecipesList = ({title, paragraph}) => {
   const [tagsList, setTagsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   // const [isLoading, setIsLoading] = useState(true);
+  const [recipe, setRecipe] = useState();
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
+
+  const appendToFormData = (data) => {
+    const formData = new FormData();
+    formData.append("name", data["name"]);
+    formData.append("price", data["price"]);
+    formData.append("description", data["description"]);
+    formData.append("tagId", data["tagId"]);
+    formData.append("categoriesIds", data["categoriesIds"]);
+    formData.append("recipeImage", data["recipeImage"][0]);
+    return formData;
+  };
+  
   // Modal
   // const [show, setShow] = useState(false);
   // const handleClose = () => setShow(false);
@@ -52,17 +66,17 @@ const RecipesList = ({title, paragraph}) => {
     setItemId(id);
     setModalState("delete-modal");
   };
-  const showUpdateModal = (recipeItem) => {
-    console.log(recipeItem, "updated");
-    setItemId(recipeItem.id);
-    setValue("name", recipeItem.name);
-    setValue("price", recipeItem.price);
-    setValue("description", recipeItem.description);
-    setValue("tagId", recipeItem.tag.id);
-    setValue("categoriesIds", recipeItem.category[0].id);
-    // console.log(recipeItem.category[0].id);
-    setValue("recipeImage", recipeItem.imagePath);
+  const showUpdateModal = (item) => {
+    console.log(item, "updated from showUpdateModal");
     setModalState("update-modal");
+    setItemId(item.id);
+    setRecipe(item);
+    setValue("name", item.name);
+    setValue("price", item.price);
+    setValue("description", item.description);
+    setValue("tagId", item.tag.id);
+    setValue("categoriesIds", item.category[0].id);
+    // setValue("recipeImage", item?.imagePath);  
   };
   const handleClose = () => setModalState("close");
   // Modal
@@ -70,20 +84,7 @@ const RecipesList = ({title, paragraph}) => {
 
   const onSubmit = async (data) =>{
     console.log(data);
-    const addFormData = 
-    Object
-    .entries(data)
-    .reduce((fd, [key, value]) => 
-    (fd.append(key, key === 'recipeImage' ? value[0] : value), fd), 
-    new FormData());
-
-    // const addFormData = new FormData();
-    //  addFormData.append("name", data["name"]); // Sent to backend
-    //  addFormData.append("price", data["price"]);
-    //  addFormData.append("description", data["description"]);
-    //  addFormData.append("tagId", data["tagId"]);
-    //  addFormData.append("categoriesIds", data["categoriesIds"]);
-    //  addFormData.append("recipeImage", data["recipeImage"][0]);
+    const addFormData = appendToFormData(data);
 
     await axios
     .post(baseUrl + 'Recipe', addFormData,{
@@ -195,8 +196,10 @@ const RecipesList = ({title, paragraph}) => {
 
   const updateRecipe = async (data) => {
     console.log(data);
+    const updateFormData = appendToFormData(data);
+    
     await axios
-      .put(baseUrl + `Recipe/${itemId}`, data, {
+      .put(baseUrl + `Recipe/${itemId}`, updateFormData , {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -255,7 +258,7 @@ const RecipesList = ({title, paragraph}) => {
     paragraph={'You can now add your items that any user can order it from the Application and you can edit'} />
   
   {/* modal update recipe*/}
-  <Modal
+      <Modal
         show={modalState === "update-modal"}
         onHide={handleClose}
         backdrop="static"
@@ -322,7 +325,9 @@ const RecipesList = ({title, paragraph}) => {
               )}
 
             <select 
-              {...register("categoriesIds", { required: true, valueAsNumber:true })}
+              {...register("categoriesIds", { 
+                required: true,
+                 valueAsNumber:true })}
               aria-label="Default select example"
               type="number"
               className="form-select mt-3"
@@ -346,10 +351,14 @@ const RecipesList = ({title, paragraph}) => {
                 <input
                 {...register("recipeImage")}
                 className="form-control" type="file" id="formFile"/>
+                <div className="text-center my-3">
+                 <img src={imgUrl + recipe?.imagePath} 
+                                  alt="recipe-image"
+                                  className="w-25 img-fluid " />
+                </div>
+                 
               </div>  
-              {errors.recipeImage && errors.recipeImage.type === "required" && (
-                    <span className="text-danger ">Recipe image is required</span>
-                  )} 
+              
 
             <div className="form-group my-3 text-end">
               <button
@@ -598,8 +607,8 @@ const RecipesList = ({title, paragraph}) => {
                               </td>
                             <td>{recipe?.price}</td>
                             <td>{recipe?.description}</td>
-                            <td>{recipe.tag?.name}</td>
-                            <td>{recipe.category[0]?.name}</td>
+                            <td>{recipe?.tag?.name}</td>
+                            <td>{recipe?.category[0]?.name}</td>
                             <td>
                             <i
                               onClick={()=>{showUpdateModal(recipe)}}
