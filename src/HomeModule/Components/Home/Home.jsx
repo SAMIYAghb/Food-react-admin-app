@@ -1,7 +1,7 @@
 
 import Header from "../../../SharedModule/Components/Header/Header"
 import { Link } from 'react-router-dom';
-import Loader from "../../../SharedModule/Components/Loader/Loader";
+// import Loader from "../../../SharedModule/Components/Loader/Loader";
 
 
 
@@ -29,7 +29,7 @@ const Home = ({title, paragraph}) => {
         </div>
       </div>
       
-<Loader/>
+{/* <Loader/> */}
   
       
     </>
