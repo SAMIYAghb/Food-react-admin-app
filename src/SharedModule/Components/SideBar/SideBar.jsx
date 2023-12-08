@@ -49,6 +49,7 @@ const SideBar = () => {
             },
           }}>
           <MenuItem onClick={handleToggle}
+<<<<<<< HEAD
           icon={ 
             <div className='img-parent'>
               <img className='logo-toggle' src={togl} alt="logo-img-toggle" />
@@ -56,6 +57,10 @@ const SideBar = () => {
 
           } 
           // icon={<i className='fa fa-bars'></i>} 
+=======
+          icon={<img className=' icon-img-side' src={togl} alt="logo-img-toggle" />} 
+{/*           icon={<i className='fa fa-bars'></i>}  */}
+>>>>>>> d0fdd101238339d05bd4eb7658093dce427241ef
           component={<Link to="/dashboard" />}>
           </MenuItem>
 
