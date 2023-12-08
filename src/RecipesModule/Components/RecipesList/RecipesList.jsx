@@ -1,18 +1,21 @@
 import Header from "../../../SharedModule/Components/Header/Header";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-// import { baseUrl } from "../../../Constants/ApiUrl";
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 import defaultrecipeImg from '../../../assets/images/1.webp';
-import { baseUrl } from './../../../Constants/ApiUrl';
+import { AuthContext } from './../../../Context/AuthContext';
+import { ToastContext } from './../../../Context/ToastContext';
 
 
-const RecipesList = ({title, paragraph}) => {
+
+const RecipesList = () => {
   // console.log(categoriesList , 'from recipe list');
+  let { requestHeaders, baseUrl } = useContext(AuthContext);
+  let { getToastValue } = useContext(ToastContext);
   const imgUrl = 'https://upskilling-egypt.com/'
   const[itemId, setItemId] = useState(0);
   //state for pagination
@@ -46,9 +49,6 @@ const RecipesList = ({title, paragraph}) => {
   };
   
   // Modal
-  // const [show, setShow] = useState(false);
-  // const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
   const [modalState, setModalState] = useState("close");
   const showAddModal = () => {
     getTagsList();
@@ -82,32 +82,19 @@ const RecipesList = ({title, paragraph}) => {
   // Modal
 
   const onSubmit = async (data) =>{
-    console.log(data);
+    // console.log(data);
     const addFormData = appendToFormData(data);
 
     await axios
     .post(baseUrl + 'Recipe', addFormData,{
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        "Content-type": "multipart/form-data",
-      },
+      headers: requestHeaders,
     }
     )
     .then((response)=>{
       handleClose();
       getRecipesList();
-      console.log(response, 'recipe');
-      toast.success("Recipe added successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored",
-        });
-
+      // console.log(response, 'recipe');
+      getToastValue("success", "Recipe added successfully");
     })
     .catch((error) =>{
       console.log(error);
@@ -129,10 +116,9 @@ const RecipesList = ({title, paragraph}) => {
   const getCategoriesList = async () => {
     await axios
       .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
-        headers: {
+        headers:
           //pour obtenir les caterories on doit étre login 'authorized'
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
+          requestHeaders,
       })
       .then((response) => {
         // console.log(response.data.data, 'to get category id from recipeListe');
@@ -147,9 +133,7 @@ const RecipesList = ({title, paragraph}) => {
   const getRecipesList = async(pageNo, name, tagId, categoryId) =>{
     await axios
     .get(baseUrl + 'Recipe',{
-      headers: {
-      Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-    },
+      headers:requestHeaders,
       params:{
         pageSize: 5,//statique
         pageNumber: pageNo, //dynamique
@@ -179,9 +163,7 @@ const RecipesList = ({title, paragraph}) => {
     await axios
     .delete(baseUrl + `Recipe/${itemId}`, 
     {
-      headers:{
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-      },
+      headers:requestHeaders,
     })
     .then((response) =>{
       // console.log(response);
@@ -199,22 +181,12 @@ const RecipesList = ({title, paragraph}) => {
 
     await axios
       .put(baseUrl + `Recipe/${itemId}`, updateFormData , {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
+        headers: requestHeaders,
+
       })
       .then((response) => {
-        console.log(response);
-        toast.success("Recipe Updated successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored",
-        });
+        // console.log(response);
+        getToastValue("success", "Recipe updated successfully");
         handleClose();
         getRecipesList();
       })
