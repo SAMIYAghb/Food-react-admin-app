@@ -43,7 +43,7 @@ const UsersList = ({title, paragraph}) => {
         pageSize: 5,//statique
         pageNumber: pageNo, //dynamique
         userName: userName,
-        group: gpId,
+        groups: gpId,
       }
     })
     .then((response) => {
@@ -100,9 +100,9 @@ const UsersList = ({title, paragraph}) => {
   }
   
   const getRoleValue = (select) =>{
-    console.log(select.target.value);
+    // console.log(select.target.value);
     setSelectedRoleId(select.target.value); //pour passer le parametre du filtre aux autre pages
-    getUsersList(1, searchString, selectedRoleId);//filtrer par name & role
+    getUsersList(1, searchString, select.target.value);//filtrer par name & role
   }
   //end reel time search filtration Users
 
@@ -162,9 +162,9 @@ const UsersList = ({title, paragraph}) => {
                   placeholder='Search By User Name...' className='form-control my-2' type="text"  />
               </div>            
               <div className="col-md-6 ">
-              <select onChange={getRoleValue} className="form-select  my-2">
+              <select onChange={getRoleValue} className="form-select my-2">
                   <option value="" className="text-muted">
-                    search by role
+                    Search by role
                   </option>
                   <option value="1">admin</option>
                   <option value="2">user</option>

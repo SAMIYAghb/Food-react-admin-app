@@ -41,3 +41,22 @@
 .pag-clic{
   cursor: pointer;
 }
+.logo-toggle{
+  width: 130px;
+
+}
+.img-parent{
+  /* margin-left: 2rem;
+  padding-top: 2rem;
+  margin-bottom: 2rem; */
+}
+.img-parent:hover{
+  background-color: transparent
+}
+.logo-toggle a:hover{
+  background-color: transparent
+
+}
+.sidebar-container .ps-sidebar-container .logo-toggle span{
+  width: fit-content;
+}

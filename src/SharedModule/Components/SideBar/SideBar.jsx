@@ -49,8 +49,13 @@ const SideBar = () => {
             },
           }}>
           <MenuItem onClick={handleToggle}
-          // icon={<img className='img-fluid icon-img-side' src={togl} alt="logo-img-toggle" />} 
-          icon={<i className='fa fa-bars'></i>} 
+          icon={ 
+            <div className='img-parent'>
+              <img className='logo-toggle' src={togl} alt="logo-img-toggle" />
+            </div>
+
+          } 
+          // icon={<i className='fa fa-bars'></i>} 
           component={<Link to="/dashboard" />}>
           </MenuItem>
 
