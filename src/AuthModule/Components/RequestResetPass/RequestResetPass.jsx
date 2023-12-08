@@ -1,12 +1,16 @@
-import logo from '../../../assets/images/logo4-3.png';
-import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { baseUrl } from './../../../Constants/ApiUrl';
+import { useContext } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import logo from '../../../assets/images/logo4-3.png';
+import { AuthContext } from './../../../Context/AuthContext';
+import { ToastContext } from './../../../Context/ToastContext';
 
 
 const RequestResetPass = () => {
+  let { baseUrl } = useContext(AuthContext);
+  let { getToastValue } = useContext(ToastContext);
     const navigate = useNavigate();
     const {
         register, 
@@ -15,38 +19,19 @@ const RequestResetPass = () => {
       } = useForm();
 
     const onSubmit = async(data) => {
-        console.log(data)
+        // console.log(data)
         await axios
           .post(baseUrl + "Users/Reset/Request", data)
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             navigate('/reset-pass');
-
             setTimeout(()=>{
-              toast.success("Mail set successfully",{
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: "undefined",
-                theme: "colored"
-              });
+              getToastValue("success", "Mail set successfully");
             }, 1);
           })
           .catch((error)=>{
-              console.log(error);
-              toast.error(error.response.data.message, {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: "undefined",
-                theme: "colored"
-              }); 
+              // console.log(error);
+              getToastValue("error", error.response.data.message);
         });  
     }
 

@@ -1,14 +1,17 @@
 import axios from 'axios';
+import { useForm } from "react-hook-form";
 import logo from '../../../assets/images/logo4-3.png';
-import { useForm } from "react-hook-form"
-// import { baseUrl } from '../../../Constants/ApiUrl';
-import { useNavigate, Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { baseUrl } from './../../../Constants/ApiUrl';
+import { AuthContext } from './../../../Context/AuthContext';
+import { ToastContext } from './../../../Context/ToastContext';
 
 
-const Login = ({saveAdminData}) => {
+const Login = () => {
+  let { baseUrl , saveAdminData} = useContext(AuthContext);
+  let { getToastValue } = useContext(ToastContext);
  
   const navigate = useNavigate();
   const {
@@ -27,16 +30,7 @@ const Login = ({saveAdminData}) => {
     .then((response) => {
 
       setTimeout(()=>{
-        toast.success("Congratulations! You are logIn",{
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored"
-        });
+        getToastValue("success", "Congratulations! You are logIn");
       }, 1);
       
       console.log(response.data.token);
@@ -47,28 +41,13 @@ const Login = ({saveAdminData}) => {
     })
     .catch((error)=>{
         // console.log(error.response.data.message);
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored"
-        }); 
+        getToastValue("error", error.response.data.message);
     });  
   }
 
   return (
     <div className="auth-container container-fluid">
-        <ToastContainer 
-        position="top-right" 
-        autoClose={3000}
-        closeOnClick
-        draggable
-        theme="light"
-        />
+        <ToastContainer />
         <div className="row bg-overlay vh-100 justify-content-center align-items-center">
           <div className="col-md-6">
             <div className="bg-white p-2">

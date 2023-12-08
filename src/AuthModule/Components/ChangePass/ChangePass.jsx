@@ -1,12 +1,15 @@
-import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import logo from '../../../assets/images/logo4-3.png';
-import { baseUrl } from '../../../Constants/ApiUrl';
+import { useContext } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import logo from '../../../assets/images/logo4-3.png';
+import { AuthContext } from './../../../Context/AuthContext';
+import { ToastContext } from './../../../Context/ToastContext';
 
 const ChangePass = ({handleClose}) => {
+  let { requestHeaders, baseUrl } = useContext(AuthContext);
+  let { getToastValue } = useContext(ToastContext);
   const navigate = useNavigate();
   const {
     register, //contient the data of the form
@@ -18,50 +21,24 @@ const ChangePass = ({handleClose}) => {
     // console.log(data)
     await axios
     .put(baseUrl + "Users/ChangePassword", data,{
-      headers:{
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-      }
+      headers:requestHeaders
     })
     .then((response) => {
-      console.log(response);
+      // console.log(response);
       handleClose();
-      toast.success("Password change successfully",{
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: "undefined",
-        theme: "colored"
-      });
+      getToastValue("success", "Password change successfully");
       navigate('/login');
      })
     .catch((error)=>{
         // console.log(error);
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored"
-        }); 
+        getToastValue("error", error.response.data.message);
     });  
   }
 
   return (
     <>
     {/*  <div className="auth-container container-fluid">   */}
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000}
-        closeOnClick
-        draggable
-        theme="light"
-        />
+      <ToastContainer />
     <div className="row  justify-content-center align-items-center">
       {/* <div className="col-md-6"> */}
       <div className="bg-white p-2">
