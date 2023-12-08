@@ -1,16 +1,17 @@
 import Header from "../../../SharedModule/Components/Header/Header"
 import Modal from "react-bootstrap/Modal";
-// import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import axios from "axios";
-
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
-import { baseUrl } from './../../../Constants/ApiUrl';
+import { AuthContext } from './../../../Context/AuthContext';
+import { ToastContext } from './../../../Context/ToastContext';
 
 
-const UsersList = ({title, paragraph}) => {
+const UsersList = () => {
+  let { requestHeaders, baseUrl } = useContext(AuthContext);
+  let { getToastValue } = useContext(ToastContext);
 
   const imgUrl = 'https://upskilling-egypt.com/';
   const[usersList, setUsersList] = useState([]);
@@ -35,10 +36,9 @@ const UsersList = ({title, paragraph}) => {
    const getUsersList = async(pageNo, userName, gpId) =>{
     await axios
     .get(baseUrl + "Users", {
-      headers: {
+      headers: 
         //pour obtenir les users on doit étre login 'authorized'
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },      
+        requestHeaders,   
       params:{
         pageSize: 5,//statique
         pageNumber: pageNo, //dynamique
@@ -58,7 +58,7 @@ const UsersList = ({title, paragraph}) => {
       setCurrentPage(pageNo);//************** */
     })
     .catch((error) => {
-      console.log(error);
+      // console.log(error);
     });
    }
 
@@ -66,23 +66,13 @@ const UsersList = ({title, paragraph}) => {
     // console.log(id, 'deleted');
     await axios
     .delete(baseUrl + `Users/${itemId}`, {
-      headers: {
+      headers:
         //pour obtenir les users on doit étre login 'authorized'
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+        requestHeaders,
     })
     .then((response) => {
       // console.log(response.data.data);
-      toast.success("User Deleted successfully", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: "undefined",
-        theme: "colored",
-      });
+      getToastValue("success", "User Deleted successfully");
       getUsersList();
       handleClose();
     })
