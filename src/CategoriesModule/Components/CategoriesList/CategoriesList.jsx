@@ -1,16 +1,18 @@
 import Header from "./../../../SharedModule/Components/Header/Header";
 import { useEffect, useState } from "react";
-// import { baseUrl } from "../../../Constants/ApiUrl";
-
 import axios from "axios";
 import nodata from "../../../assets/images/nodata.png";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import Nodata from "./../../../SharedModule/Components/Nodata/Nodata";
-import { baseUrl } from './../../../Constants/ApiUrl';
+import { AuthContext } from './../../../Context/AuthContext';
+import { useContext } from "react";
+import { ToastContext } from "../../../Context/ToastContext";
 
-const CategoriesList = ({ title, paragraph }) => {
+const CategoriesList = () => {
+  let { requestHeaders, baseUrl } = useContext(AuthContext);
+  let { getToastValue } = useContext(ToastContext);
   const {
     register,
     handleSubmit,
@@ -53,23 +55,14 @@ const CategoriesList = ({ title, paragraph }) => {
     // console.log(data);
     await axios
       .post(baseUrl + "Category", data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
+        headers: 
+          requestHeaders,
+      
       })
       .then((response) => {
         console.log(response);
         getCategoriesList(); // update the list: mise a jour de la liste des categories; permet à la nouvelle category d'apparaitre dans la list
-        toast.success("Category added successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored",
-        });
+        getToastValue("success", "Category added successfully");
         handleClose();
       })
       .catch((error) => {
@@ -85,7 +78,7 @@ let totalPages;//***********
       .get(baseUrl + "Category", {
         headers: {
           //pour obtenir les caterories on doit étre login 'authorized'
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          requestHeaders,
         },
         params: {
           pageSize: 5, //c'est moi qui a choisi de mettre 5 category dans chaque page donc c une valeur changeable
@@ -116,21 +109,12 @@ let totalPages;//***********
     await axios
       .delete(baseUrl + `category/${itemId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          requestHeaders,
         },
       })
       .then((response) => {
-        console.log(response);
-        toast.success("Category deleted successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored",
-        });
+        // console.log(response);
+        getToastValue("success", "Category deleted successfully");       
         handleClose();
         getCategoriesList();
       })
@@ -144,21 +128,12 @@ let totalPages;//***********
     await axios
       .put(baseUrl + `category/${itemId}`, data, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          requestHeaders,
         },
       })
       .then((response) => {
-        console.log(response);
-        toast.success("Category Updated successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: "undefined",
-          theme: "colored",
-        });
+        // console.log(response);
+        getToastValue("success", "Category Updated successfully");      
         handleClose();
         getCategoriesList();
       })
