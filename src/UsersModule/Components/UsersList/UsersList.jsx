@@ -7,11 +7,14 @@ import nodata from "../../../assets/images/nodata.png";
 import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 import { AuthContext } from './../../../Context/AuthContext';
 import { ToastContext } from './../../../Context/ToastContext';
+import Loader from './../../../SharedModule/Components/Loader/Loader';
+
 
 
 const UsersList = () => {
   let { requestHeaders, baseUrl } = useContext(AuthContext);
   let { getToastValue } = useContext(ToastContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const imgUrl = 'https://upskilling-egypt.com/';
   const[usersList, setUsersList] = useState([]);
@@ -34,6 +37,7 @@ const UsersList = () => {
 
    let totalPages;
    const getUsersList = async(pageNo, userName, gpId) =>{
+    setIsLoading(true);
     await axios
     .get(baseUrl + "Users", {
       headers: 
@@ -47,6 +51,7 @@ const UsersList = () => {
       }
     })
     .then((response) => {
+      setIsLoading(false);
       // console.log(response.data.data);
       // console.log(response.data.totalNumberOfPages);
       let totalPages = response.data.totalNumberOfPages;//************ */
@@ -58,6 +63,7 @@ const UsersList = () => {
       setCurrentPage(pageNo);//************** */
     })
     .catch((error) => {
+      setIsLoading(false);
       // console.log(error);
     });
    }
@@ -122,10 +128,20 @@ const UsersList = () => {
               click on delete it
             </p>
             <div className="text-end">
+            <button
+              onClick={handleClose} 
+              className="btn btn-success mx-3">Cancel</button>
               <button 
                 onClick={()=>{deleteUser(itemId)}}
-                className="btn btn-outline-danger w-50 ">
-                Delete this item
+                className={
+                  "btn btn-outline-danger w-50" + (isLoading ? " disabled" : "")
+                }
+                >
+                  {isLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Delete this user"
+                )}
               </button>
             </div>
           </div>
@@ -153,11 +169,11 @@ const UsersList = () => {
               </div>            
               <div className="col-md-6 ">
               <select onChange={getRoleValue} className="form-select my-2">
-                  <option value="" className="text-muted">
+                  <option value={""} className="text-muted">
                     Search by role
                   </option>
-                  <option value="1">admin</option>
-                  <option value="2">user</option>
+                  <option value={1}>admin</option>
+                  <option value={2}>user</option>
                 </select>
               </div> 
             
@@ -175,8 +191,10 @@ const UsersList = () => {
                 </tr>
               </thead>
 
-              <tbody>            
-                {
+              <tbody>   
+              {
+                isLoading ? (<Loader/>) : (<>
+{
                   usersList.map((user, index)=>(
                     <>
                     <tr className="text-center" key={user.id}>
@@ -210,6 +228,9 @@ const UsersList = () => {
                     </>
                   ))
                 }
+                  </>)
+              }          
+                
               </tbody>
             </table>
           </div>
@@ -228,7 +249,7 @@ const UsersList = () => {
               {
                 pagesArray.map((pageNo) =>(
                   <>
-                    <li onClick={()=>getUsersList(pageNo, searchString, selectedRoleId)}
+                    <li onClick={()=>getUsersList(pageNo, searchString)}
                     key={pageNo} 
                     // className="page-item "
                     className={`page-item ${pageNo === currentPage ? 'active' : ''}`}

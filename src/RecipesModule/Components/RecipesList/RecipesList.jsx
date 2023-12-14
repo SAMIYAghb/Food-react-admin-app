@@ -9,6 +9,7 @@ import Nodata from './../../../SharedModule/Components/Nodata/Nodata';
 import defaultrecipeImg from '../../../assets/images/1.webp';
 import { AuthContext } from './../../../Context/AuthContext';
 import { ToastContext } from './../../../Context/ToastContext';
+import Loader from "../../../SharedModule/Components/Loader/Loader";
 
 
 
@@ -18,6 +19,7 @@ const RecipesList = () => {
   let { getToastValue } = useContext(ToastContext);
   const imgUrl = 'https://upskilling-egypt.com/'
   const[itemId, setItemId] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   //state for pagination
   const [pagesArray, setPagesArray] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);//************* */
@@ -83,20 +85,23 @@ const RecipesList = () => {
 
   const onSubmit = async (data) =>{
     // console.log(data);
-    const addFormData = appendToFormData(data);
 
+    const addFormData = appendToFormData(data);
+    setIsLoading(true);
     await axios
     .post(baseUrl + 'Recipe', addFormData,{
       headers: requestHeaders,
     }
     )
     .then((response)=>{
+      setIsLoading(false);
       handleClose();
       getRecipesList();
       // console.log(response, 'recipe');
       getToastValue("success", "Recipe added successfully");
     })
     .catch((error) =>{
+      setIsLoading(false);
       console.log(error);
     })
   }
@@ -131,6 +136,7 @@ const RecipesList = () => {
 
   let totalPages;
   const getRecipesList = async(pageNo, name, tagId, categoryId) =>{
+    setIsLoading(true);
     await axios
     .get(baseUrl + 'Recipe',{
       headers:requestHeaders,
@@ -144,6 +150,7 @@ const RecipesList = () => {
   },
     )
     .then((response)=>{
+      setIsLoading(false);
       // console.log(response.data.data , 'recipesList');
       let totalPages = response.data.totalNumberOfPages;//************ */
       let arrayOfNumberOfPages = Array(response.data.totalNumberOfPages)
@@ -155,11 +162,13 @@ const RecipesList = () => {
         setCurrentPage(pageNo);//************** */
     })
     .catch((error) =>{
+      setIsLoading(false);
       console.log(error);
     })
   }
 
   const deleteRecipe = async(itemId) => {
+    setIsLoading(true);
     await axios
     .delete(baseUrl + `Recipe/${itemId}`, 
     {
@@ -167,15 +176,18 @@ const RecipesList = () => {
     })
     .then((response) =>{
       // console.log(response);
+      setIsLoading(false);
       handleClose();
       getRecipesList();
     })
     .catch((error) =>{
       console.log(error);
+      setIsLoading(false);
     })
   }
 
   const updateRecipe = async (data) => {
+    setIsLoading(true);
     console.log(data);
     const updateFormData = appendToFormData(data);
 
@@ -185,12 +197,14 @@ const RecipesList = () => {
 
       })
       .then((response) => {
+        setIsLoading(false);
         // console.log(response);
         getToastValue("success", "Recipe updated successfully");
         handleClose();
         getRecipesList();
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log(error);
       });
   }
@@ -329,13 +343,21 @@ const RecipesList = () => {
                 </div>
                  
               </div>  
-              
-
             <div className="form-group my-3 text-end">
               <button
               onClick={handleClose} 
               className="btn btn-outline-danger mx-3">Cancel</button>
-              <button type="submit" className="btn btn-success ">Save</button>
+              <button type="submit"
+               className={
+                "btn btn-success w-25" + (isLoading ? " disabled" : " ")
+              }>
+                 {isLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  " Save"
+                )}
+               
+                </button>
             </div>
           </form>
         </Modal.Body>
@@ -354,7 +376,11 @@ const RecipesList = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group my-3">
               <input
-                {...register("name", { required: true })}
+                {...register("name", { required: true,
+                  minLength: {
+                    value: 2,
+                    message: "Recipe name shouldn't be less than two character",
+                  }, })}
                 type="text"
                 placeholder="Recipe Name"
                 className="form-control"
@@ -366,7 +392,9 @@ const RecipesList = () => {
 
             <div className="form-group my-3">
               <input
-                {...register("price", { required: true })}
+                {...register("price", { required: true ,
+                 })}
+                 min="1"
                 type="number"
                 placeholder="Price"
                 className="form-control"
@@ -442,7 +470,16 @@ const RecipesList = () => {
               <button
               onClick={handleClose} 
               className="btn btn-outline-danger mx-3">Cancel</button>
-              <button type="submit" className="btn btn-success ">Save</button>
+              <button type="submit" 
+              className={
+                "btn btn-success w-25" + (isLoading ? " disabled" : " ")
+              }>
+                {isLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Add"
+                )}
+                </button>
             </div>
           </form>
         </Modal.Body>
@@ -468,9 +505,17 @@ const RecipesList = () => {
             </p>
             <div className="text-end">
               <button 
+
                 onClick={()=>{deleteRecipe(itemId)}}
-                className="btn btn-outline-danger w-50 ">
-                Delete this Recipe
+                className={
+                  "btn btn-outline-danger w-50" + (isLoading ? " disabled" : " ")
+                }>
+                   {isLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Delete this Recipe"
+                )}
+                
               </button>
             </div>
             
@@ -534,6 +579,8 @@ const RecipesList = () => {
               </div>
             </div>                         
           {/* End Filtration */}
+          {
+            isLoading ? ( <Loader/>):(<>
             {
             recipesList.length > 0 
             ? (
@@ -642,6 +689,9 @@ const RecipesList = () => {
                   <Nodata />
               )
             }
+            </>)
+          }
+            
         </div>
         
       </div>
