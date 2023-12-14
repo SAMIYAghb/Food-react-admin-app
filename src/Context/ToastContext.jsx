@@ -15,7 +15,7 @@ export default function ToastContextProvider(props){
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                progress: "undefined",
+                progress: undefined,
                 theme: "colored"
             })
     }
