@@ -9,10 +9,13 @@ import Nodata from "./../../../SharedModule/Components/Nodata/Nodata";
 import { AuthContext } from './../../../Context/AuthContext';
 import { useContext } from "react";
 import { ToastContext } from "../../../Context/ToastContext";
+import Loader from './../../../SharedModule/Components/Loader/Loader';
+
 
 const CategoriesList = () => {
   let { requestHeaders, baseUrl } = useContext(AuthContext);
   let { getToastValue } = useContext(ToastContext);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -53,40 +56,43 @@ const CategoriesList = () => {
 
   const onSubmit = async (data) => {
     // console.log(data);
+    setIsLoading(true);
     await axios
       .post(baseUrl + "Category", data, {
         headers: 
           requestHeaders,
-      
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
+        setIsLoading(false);
         getCategoriesList(); // update the list: mise a jour de la liste des categories; permet à la nouvelle category d'apparaitre dans la list
         getToastValue("success", "Category added successfully");
         handleClose();
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
-let totalPages;//***********
+  let totalPages;//***********
   const getCategoriesList = async (pageNo,name) => {
+    setIsLoading(true);
     //pageNo=1 => c a me donne les 5 premiere category, pageNo=2 => c a me donne les 10 category etc....
     await axios
       // .get(baseUrl + "Category/?pageSize=10&pageNumber=1", {
       .get(baseUrl + "Category", {
-        headers: {
+        headers:
           //pour obtenir les caterories on doit étre login 'authorized'
           requestHeaders,
-        },
         params: {
           pageSize: 5, //c'est moi qui a choisi de mettre 5 category dans chaque page donc c une valeur changeable
-          pageNumber: pageNo, //c une valeur fixe qui cien du backend
+          pageNumber: pageNo, //c une valeur fixe qui vient du backend
           name : name,
         },
       })
       .then((response) => {
+        setIsLoading(false);
         // console.log(response.data.data);
         // console.log(response.data.totalNumberOfPages);
         let totalPages = response.data.totalNumberOfPages;//************ */
@@ -101,43 +107,49 @@ let totalPages;//***********
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
   const deleteCategory = async (itemId) => {
     // console.log(itemId);
+    setIsLoading(true);
     await axios
       .delete(baseUrl + `category/${itemId}`, {
-        headers: {
+        headers: 
           requestHeaders,
-        },
       })
       .then((response) => {
         // console.log(response);
+        setIsLoading(false);
         getToastValue("success", "Category deleted successfully");       
         handleClose();
         getCategoriesList();
       })
       .catch((error) => {
         console.log(error);
+        getToastValue("error", error?.response?.data?.message || " error!!");       
+        setIsLoading(false);
       });
   };
 
   const updateCategory = async (data) => {
     // console.log(data);
+    setIsLoading(true);
     await axios
       .put(baseUrl + `category/${itemId}`, data, {
-        headers: {
+        headers:
           requestHeaders,
-        },
       })
       .then((response) => {
+        setIsLoading(false);
         // console.log(response);
         getToastValue("success", "Category Updated successfully");      
         handleClose();
         getCategoriesList();
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log(error);
       });
   };
@@ -187,8 +199,10 @@ let totalPages;//***********
               )}
             </div>
             <div className="form-group my-3">
-              <button className="btn btn-success w-100">
-                Add new category
+              <button className={"btn btn-success w-100" + (isLoading ? " disabled" : " ")}>
+                {
+                  isLoading == true ? (<i className="fas fa-spinner fa-spin"></i>):( "Add new category")
+                } 
               </button>
             </div>
           </form>
@@ -216,9 +230,12 @@ let totalPages;//***********
                 onClick={() => {
                   deleteCategory(itemId);
                 }}
-                className="btn btn-outline-danger w-50 "
+                className={"btn btn-outline-danger w-50" + (isLoading ? " disabled" : " ")}
               >
-                Delete this item
+                {
+                  isLoading == true ? (<i className="fas fa-spinner fa-spin"></i>):( "Delete this item")
+                }
+                
               </button>
             </div>
           </div>
@@ -248,7 +265,16 @@ let totalPages;//***********
               )}
             </div>
             <div className="form-group my-3">
-              <button className="btn btn-success w-100">Update category</button>
+              <button className={
+                  "btn btn-success w-100" + (isLoading ? " disabled" : " ")
+                }>
+                  {isLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                 "Update category"
+                )}
+                  
+                  </button>
             </div>
           </form>
         </Modal.Body>
@@ -273,6 +299,7 @@ let totalPages;//***********
           onChange={getNameValue}
           placeholder='Search By Category Name...' className='form-control my-3' type="text"  />
          {/* End Filtration */}
+         {!isLoading ? (<>
           {categoriesList.length > 0 ? (
             <div className="">
               <table className="table my-4 table-striped">
@@ -351,6 +378,7 @@ let totalPages;//***********
             // end Pagination 
             <Nodata />
           )}
+         </>):(<Loader />)}
         </div>
       </div>
     </>

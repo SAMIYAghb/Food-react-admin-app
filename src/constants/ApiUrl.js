@@ -1,1 +1,0 @@
-export const baseUrl = 'https://upskilling-egypt.com/api/v1/';
