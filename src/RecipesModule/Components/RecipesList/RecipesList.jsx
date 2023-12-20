@@ -253,7 +253,7 @@ const RecipesList = () => {
           <Modal.Header closeButton><h3>Update Recipe</h3></Modal.Header>         
           <p className="text-muted">Welcome Back! Please enter your details</p>
           <form onSubmit={handleSubmit(updateRecipe)}>
-            <div className="form-group my-3">
+            <div className="form-group my-3 ">
               <input
                 {...register("name", { required: true })}
                 type="text"

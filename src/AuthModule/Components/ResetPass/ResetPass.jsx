@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -10,6 +10,7 @@ import { ToastContext } from './../../../Context/ToastContext';
 const ResetPass = () => {
   let { baseUrl } = useContext(AuthContext);
   let { getToastValue } = useContext(ToastContext);
+  const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const {
         register, //contient the data of the form
@@ -18,15 +19,18 @@ const ResetPass = () => {
       } = useForm();
 
     const onSubmit = async(data) => {
+      setIsLoading(true);
         // console.log(data)
         await axios
         .post(baseUrl + "Users/Reset", data)        
         .then((response) => {
+          setIsLoading(false);
           // console.log(response);
-          getToastValue("success", "Password change successfully");      
+          getToastValue("success", "Password changed successfully");      
           navigate('/login');
          })
         .catch((error)=>{
+          setIsLoading(false);
             // console.log(error);
             getToastValue("error", error.response.data.message);
         });  
@@ -52,8 +56,7 @@ const ResetPass = () => {
                             { required: true,
                                 pattern:/^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/
                             })}
-                            type="email"
-                            name="email"                 
+                            type="email"                 
                             className="form-control"  placeholder="Email"/>
                             {errors.email && errors.email.type === "required" && (<span className='text-danger'>Email is required</span>)}
                             {errors.email && errors.email.type === "pattern" && (<span className='text-danger '>Email is invalid</span>)}
@@ -64,8 +67,7 @@ const ResetPass = () => {
                             {...register("seed",
                             { required: true,
                             })}
-                            // type="text"
-                            name="seed"                 
+                            type="text"               
                             className="form-control"  placeholder="OTP"/>
                             {errors.seed && errors.seed.type === "required" && (<span className='text-danger'>OTP is required</span>)}
                     </div>
@@ -74,10 +76,9 @@ const ResetPass = () => {
                         <input 
                         {...register("password",
                         { required: true,
-                          pattern:/^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/
+                          pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
                         })}
-                        type="password"
-                        name="password"                 
+                        type="password"               
                         className="form-control"  placeholder="Password"/>
                         {errors.password && errors.password.type === "required" && (<span className='text-danger'>Password is required</span>)}
                         {errors.password && errors.password.type === "pattern" && (<span className='text-danger '>password is invalid</span>)}
@@ -86,18 +87,25 @@ const ResetPass = () => {
                     <div className="form-group my-3">
                         <input 
                         {...register("confirmPassword",
-                        { required: true,                         
-                      
+                        { required: true,
+                          pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/                         
                         })}
                         type="password"                                     
                         className="form-control"  placeholder="Confirm Password"/>
                         {errors.confirmPassword && errors.confirmPassword.type === "required" && (<span className='text-danger'>confirm Password is required</span>)}
-                      
+                        {errors.confirmPassword && errors.confirmPassword.type === "pattern" && (<span className='text-danger '>password is invalid</span>)}
                     </div>
                 
                 <div className="form-group my-3">
-                  <button type="submit" className="btn btn-success w-100">
-                    Reset Password
+                  <button type="submit" className={
+                      "btn btn-success w-100" + (isLoading ? " disabled" : " ")
+                    }>
+                  
+                  {isLoading == true ? (
+                      <i className="fas fa-spinner fa-spin"></i>
+                    ) : (
+                      "Reset Password"
+                    )}
                   </button>
                 </div>            
               </form>

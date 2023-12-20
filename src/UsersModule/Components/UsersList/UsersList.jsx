@@ -126,7 +126,7 @@ const UsersList = () => {
             <p className="text-muted">
               are you sure you want to delete this item ? if you are sure just
               click on delete it
-            </p>
+            </p>        
             <div className="text-end">
             <button
               onClick={handleClose} 
@@ -156,12 +156,8 @@ const UsersList = () => {
         </div>
 
         <div className="">
-      {
-        usersList.length > 0 
-        ? (
-          <div className="">
-            {/* Filtration */}
-            <div className="row">
+          {/* Filtration */}
+          <div className="row">
               <div className="col-md-6">
                 <input 
                   onChange={getNameValue}
@@ -179,6 +175,14 @@ const UsersList = () => {
             
             </div>                         
           {/* End Filtration */}
+        {
+                isLoading ? (<Loader/>) : (<>
+      {
+        usersList.length > 0 
+        ? (
+          <div className="">
+            
+          
           <div className="table-responsive">
             <table className="table my-4 table-striped">
               <thead className="table-success">
@@ -192,9 +196,8 @@ const UsersList = () => {
               </thead>
 
               <tbody>   
-              {
-                isLoading ? (<Loader/>) : (<>
-{
+            
+                      {
                   usersList.map((user, index)=>(
                     <>
                     <tr className="text-center" key={user.id}>
@@ -228,51 +231,49 @@ const UsersList = () => {
                     </>
                   ))
                 }
-                  </>)
-              }          
-                
+
               </tbody>
             </table>
-          </div>
-            {/* Pagination  */}
-            <nav aria-label="Page navigation example ">
-            <ul className="pagination justify-content-center">
-            <li className="page-item">
-                      <a 
-                      onClick={() => getUsersList(currentPage - 1, searchString)}
-                      disabled={currentPage === 1}
-                      className="page-link pag-clic"
-                      aria-label="Previous">
-                        <span aria-hidden="true">«</span>
-                      </a>
-            </li>
-              {
-                pagesArray.map((pageNo) =>(
-                  <>
-                    <li onClick={()=>getUsersList(pageNo, searchString)}
-                    key={pageNo} 
-                    // className="page-item "
-                    className={`page-item ${pageNo === currentPage ? 'active' : ''}`}
-                    >
-                      <a className="page-link pag-clic">
-                        {pageNo}
-                      </a>
-                    </li>   
-                  </>
-                ))
-              }
-              <li 
-              onClick={() => getUsersList(currentPage + 1, searchString)}
-              disabled={currentPage === totalPages}  
-                className="page-item">
-                      <a className="page-link pag-clic"
-                      aria-label="Next">
-                        <span aria-hidden="true">» </span>
-                      </a>
+            </div>
+              {/* Pagination  */}
+              <nav aria-label="Page navigation example ">
+              <ul className="pagination justify-content-center">
+              <li className="page-item">
+                        <a 
+                        onClick={() => getUsersList(currentPage - 1, searchString)}
+                        disabled={currentPage === 1}
+                        className="page-link pag-clic"
+                        aria-label="Previous">
+                          <span aria-hidden="true">«</span>
+                        </a>
               </li>
-            </ul>
-          </nav>
-          {/* Pagination  */}
+                {
+                  pagesArray.map((pageNo) =>(
+                    <>
+                      <li onClick={()=>getUsersList(pageNo, searchString)}
+                      key={pageNo} 
+                      // className="page-item "
+                      className={`page-item ${pageNo === currentPage ? 'active' : ''}`}
+                      >
+                        <a className="page-link pag-clic">
+                          {pageNo}
+                        </a>
+                      </li>   
+                    </>
+                  ))
+                }
+                <li 
+                onClick={() => getUsersList(currentPage + 1, searchString)}
+                disabled={currentPage === totalPages}  
+                  className="page-item">
+                        <a className="page-link pag-clic"
+                        aria-label="Next">
+                          <span aria-hidden="true">» </span>
+                        </a>
+                </li>
+              </ul>
+            </nav>
+            {/* Pagination  */}
           </div>
           )
           : (
@@ -280,7 +281,7 @@ const UsersList = () => {
           )
       }
             
-        
+            </>)}
         </div>
       </div>
   </>
